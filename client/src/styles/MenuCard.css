@@ -1,0 +1,78 @@
+.dish-wrapper {
+  width: 192px;
+  border-color: #eeeeef;
+  margin: 0 10px;
+}
+
+.dish-photo {
+  overflow: hidden;
+  position: relative;
+  height: 150px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.dish-photo-background {
+  position: relative;
+  height: 100%;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.dish-price {
+  background-image: linear-gradient(
+    180deg,
+    transparent 50%,
+    rgba(0, 0, 0, 0.8)
+  );
+  align-items: flex-end;
+  background-color: transparent;
+  bottom: 0;
+  display: flex;
+  left: 0;
+  padding: 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: white;
+}
+
+.no-warp {
+  white-space: nowrap;
+  text-align: left;
+  margin: 0 0 10px 0;
+}
+
+.dish-name {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: bold;
+  color: rgb(43, 39, 60);
+  text-align: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.dish-details {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgb(117, 114, 128);
+  text-align: left;
+}
+
+.dish-detail:before {
+  margin-left: 0px;
+  content: " • ";
+  color: inherit !important;
+  font-size: inherit !important;
+  text-decoration: none !important;
+  text-indent: 0px !important;
+  display: inline-block !important;
+}

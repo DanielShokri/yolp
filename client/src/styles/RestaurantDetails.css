@@ -1,0 +1,24 @@
+.biz-details-page-container {
+  max-width: 1144px;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+
+.button-container {
+  margin: 25px 0 !important;
+}
+
+.button-spacing {
+  margin-left: 10px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .menu-container {
+    place-content: center;
+    margin-bottom: 20px;
+  }
+
+  .review-button {
+    margin: 10px 10px 15px;
+  }
+}

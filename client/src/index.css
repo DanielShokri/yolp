@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+}
+
+label.search-label {
+  color: white !important;
+}
+
+/* Utils */
+.m-30 {
+  margin: 30px !important;
+}
+
+.mtb-20 {
+  margin: 20px 0 !important;
+}
+
+.nav-links {
+  color: white;
+  text-decoration: none;
+}
+
+.input-box-shadow {
+  box-shadow: 0 0 5pt 0.5pt #d3d3d3;
+}
+
+/* Table */
+.table-container {
+  height: 400;
+  padding: 0 80px;
+  margin: 50px 0 30px 90px;
+}
+
+/* NavBar */
+/* 
+.MuiToolbar-root {
+  position: absolute !important;
+  z-index: 1 !important;
+  color: white !important;
+} */
+
+/* Media Queries */
+
+@media screen and (max-width: 768px) {
+  .table-container {
+    height: 400;
+    padding: 0 10px;
+    margin: 35px 0 30px 0;
+  }
+
+  .MuiGrid-spacing-xs-3 > .MuiGrid-item {
+    padding: 12px 0 !important;
+  }
+}
+
+@media screen and (min-width: 960px) {
+  .MuiGrid-grid-md-6 {
+    max-width: 30% !important;
+  }
+}
