@@ -13,10 +13,23 @@ const devConfig = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@
 
 const prodConfig = process.env.DATABASE_URL;
 
-const pool = new Pool({
-  connectionString:
-    process.env.NODE_ENV === "production" ? prodConfig : devConfig,
-});
+// const pool = new Pool({
+//   connectionString:
+//     process.env.NODE_ENV === "production" ? prodConfig : devConfig,
+// });
+
+const pool =
+  process.env.NODE_ENV === "production"
+    ? new Pool({
+        connectionString: prodConfig,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      })
+    : new Pool({
+        connectionString: devConfig,
+      });
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
 };
