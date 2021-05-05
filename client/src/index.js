@@ -3,7 +3,10 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import "./index.css";
+
 const theme = createMuiTheme();
 
 theme.typography.h3 = {
@@ -18,9 +21,12 @@ theme.typography.h3 = {
 
 ReactDOM.render(
   // <React.StrictMode>
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>,
+  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </MuiPickersUtilsProvider>,
+
   // </React.StrictMode>,
   document.getElementById("root")
 );

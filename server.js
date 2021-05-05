@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const { cloudinary } = require("./utils/cloudinary");
 // const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
@@ -97,20 +98,69 @@ app.post("/api/restaurants/search", async (req, res) => {
 
 // Create a restaurant
 app.post("/api/restaurants", async (req, res) => {
-  const { name, location, price_range } = req.body;
+  const {
+    name,
+    location,
+    price_range,
+    restaurant_image,
+    opening_time,
+    closing_time,
+  } = req.body;
   try {
-    const results = await db.query(
-      "INSERT INTO restaurants (name, location, price_range) values ($1, $2, $3) returning *",
-      [name.toLowerCase(), location, price_range]
-    );
-
-    res.json({
-      status: "sucsses",
-      results: results.rows.length,
-      data: {
-        restaurants: results.rows,
-      },
-    });
+    if (restaurant_image) {
+      await cloudinary.uploader.upload(
+        restaurant_image,
+        {
+          upload_preset: "yolp",
+        },
+        async (error, { url }) => {
+          try {
+            const results = await db.query(
+              "INSERT INTO restaurants (name, location, price_range, restaurant_image, opening_time, closing_time) values ($1, $2, $3, $4, $5, $6) returning *",
+              [
+                name.toLowerCase(),
+                location,
+                price_range,
+                url,
+                opening_time,
+                closing_time,
+              ]
+            );
+            res.json({
+              status: "sucsses",
+              results: results.rows.length,
+              data: {
+                restaurants: results.rows,
+              },
+            });
+          } catch (error) {
+            res.json(error);
+          }
+        }
+      );
+    } else {
+      try {
+        const results = await db.query(
+          "INSERT INTO restaurants (name, location, price_range, opening_time, closing_time) values ($1, $2, $3, $4, $5) returning *",
+          [
+            name.toLowerCase(),
+            location,
+            price_range,
+            opening_time,
+            closing_time,
+          ]
+        );
+        res.json({
+          status: "sucsses",
+          results: results.rows.length,
+          data: {
+            restaurants: results.rows,
+          },
+        });
+      } catch (error) {
+        res.json(error);
+      }
+    }
   } catch (error) {
     res.status(400).json({
       status: "Fail",
@@ -121,20 +171,32 @@ app.post("/api/restaurants", async (req, res) => {
 
 // Update Restaurant
 app.put("/api/restaurants/:id", async (req, res) => {
-  const { name, location, price_range } = req.body;
+  const { name, location, price_range, restaurant_image } = req.body;
   try {
-    const results = await db.query(
-      "UPDATE restaurants SET name=$1, location=$2, price_range=$3 WHERE id=$4 returning *",
-      [name, location, price_range, req.params.id]
-    );
-
-    res.status(200).json({
-      status: "sucsses",
-      results: results.rows.length,
-      data: {
-        restaurants: results.rows,
+    await cloudinary.uploader.upload(
+      restaurant_image,
+      {
+        upload_preset: "yolp",
       },
-    });
+      async (error, { url }) => {
+        try {
+          const results = await db.query(
+            "UPDATE restaurants SET name=$1, location=$2, price_range=$3, restaurant_image=$4 WHERE id=$5 returning *",
+            [name, location, price_range, url, req.params.id]
+          );
+
+          res.status(200).json({
+            status: "sucsses",
+            results: results.rows.length,
+            data: {
+              restaurants: results.rows,
+            },
+          });
+        } catch (error) {
+          res.json(error);
+        }
+      }
+    );
   } catch (error) {
     res.status(400).json({
       status: "Fail",

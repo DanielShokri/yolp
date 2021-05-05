@@ -12,12 +12,18 @@ import ReviewCard from "../components/ReviewCard";
 import { routes, buildPath } from "./../utils/routes";
 import { useHistory } from "react-router";
 import "../styles/RestaurantDetails.css";
+import { format } from "date-fns";
+import { he } from "date-fns/locale";
 
 const RestaurantDetails = (props) => {
   let history = useHistory();
   const { match } = props;
   const restaurantId = match.params.id;
   const [restaurant, setRestaurant] = useState({});
+  console.log(
+    "🚀 ~ file: RestaurantDetails.js ~ line 21 ~ RestaurantDetails ~ restaurant",
+    restaurant
+  );
   const [restaurantReviews, setRestaurantReviews] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -41,7 +47,7 @@ const RestaurantDetails = (props) => {
     <>
       {!isEditMode ? (
         <>
-          <HeroSection>
+          <HeroSection height="400">
             <Typography
               className="mtb-20"
               variant="h1"
@@ -59,14 +65,23 @@ const RestaurantDetails = (props) => {
               </>
             )}
 
-            <div className="mtb-20">
+            <div className="mtb-20 flex-basis">
               <Chip
                 size="medium"
                 color={isOpen ? "primary" : "secondary"}
                 label={isOpen ? "Open" : "Close"}
               />
-              &nbsp; &nbsp;
-              <span style={{ fontWeight: "700" }}>10:00 - 19:00</span>
+              <span style={{ fontWeight: "700" }}>
+                {restaurant.opening_time &&
+                  format(new Date(restaurant.opening_time), "h:mm", {
+                    locale: he,
+                  })}{" "}
+                -
+                {restaurant.opening_time &&
+                  format(new Date(restaurant.closing_time), "h:mm", {
+                    locale: he,
+                  })}
+              </span>
             </div>
           </HeroSection>
 

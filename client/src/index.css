@@ -29,11 +29,17 @@ label.search-label {
   box-shadow: 0 0 5pt 0.5pt #d3d3d3;
 }
 
+.flex-basis {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
 /* Table */
 .table-container {
   height: 400;
   padding: 0 80px;
-  margin: 50px 0 30px 90px;
+  margin: 50px 0 30px 0;
 }
 
 /* NavBar */

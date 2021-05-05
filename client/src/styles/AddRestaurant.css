@@ -4,3 +4,13 @@ form {
   flex-direction: column;
   margin: 40px 0;
 }
+
+.open-timepicker {
+  margin-right: 25px !important;
+}
+
+@media screen and (max-width: 780px) {
+  .open-timepicker {
+    margin-right: 25px;
+  }
+}

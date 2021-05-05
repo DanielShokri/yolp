@@ -24,7 +24,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <HeroSection>
+      <HeroSection height="400">
         <img src="/images/logo.png" alt="logo" />
         <Search />
       </HeroSection>

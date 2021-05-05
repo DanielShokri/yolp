@@ -1,11 +1,14 @@
+import { useContext } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { IconButton, Typography, Badge } from "@material-ui/core";
 import { useHistory } from "react-router";
 import StarRating from "./StarRating";
 import { routes, buildPath } from "./../utils/routes";
+import { RestaurantsContext } from "./../context/RestaruantsContext";
 import "../styles/Card.css";
 
 const Card = ({ restaurant, handleDelete }) => {
+  const { setRestaurant } = useContext(RestaurantsContext);
   let history = useHistory();
 
   const deleteRestaurant = () => {
@@ -23,8 +26,11 @@ const Card = ({ restaurant, handleDelete }) => {
           <div
             className="photo-box"
             style={{
-              backgroundImage:
-                "url(https://source.unsplash.com/1600x900/?dish)",
+              backgroundImage: `url(${
+                restaurant.restaurant_image
+                  ? restaurant.restaurant_image
+                  : "/images/placeholder-image.png"
+              })`,
             }}
           ></div>
         </div>
@@ -32,11 +38,12 @@ const Card = ({ restaurant, handleDelete }) => {
           <div className="card-content">
             <h3 className="card_content-title--linked">
               <div
-                onClick={() =>
+                onClick={() => {
+                  setRestaurant(restaurant);
                   history.push(
                     buildPath(routes.restaurantDetails, { id: restaurant.id })
-                  )
-                }
+                  );
+                }}
               >
                 {restaurant.name.replace(/\w/, (c) => c.toUpperCase())}
               </div>

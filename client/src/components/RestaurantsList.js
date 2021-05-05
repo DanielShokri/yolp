@@ -49,7 +49,7 @@ const RestaurantsList = ({ restaurantsList, isSerachList }) => {
           Recent Restaurants
         </Typography>
       )}
-      <Grid container alignContent="center" spacing={3}>
+      <Grid container alignItems="center" justify="center" spacing={3}>
         {restaurantsList.slice(0, showMoreCount).map((restaurant) => (
           <Grid item xs={12} sm={6} xl={4} md={6} key={restaurant.id}>
             <Card restaurant={restaurant} handleDelete={handleDelete} />
