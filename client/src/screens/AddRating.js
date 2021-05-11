@@ -41,7 +41,6 @@ const AddRating = (props) => {
   }, [restaurantId, setOpenError]);
 
   const handleReviewPost = async () => {
-    console.log("inputs", inputs);
     try {
       const res = await restaruantsApi.post(
         `/${restaurantId}/addReview`,

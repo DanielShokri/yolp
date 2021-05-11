@@ -13,8 +13,6 @@ import { routes, buildPath } from "./../utils/routes";
 import { useHistory } from "react-router";
 import "../styles/RestaurantDetails.css";
 import { format } from "date-fns";
-import toDate from "date-fns/toDate";
-import parseISO from "date-fns/parseISO";
 import { he } from "date-fns/locale";
 
 const RestaurantDetails = (props) => {
