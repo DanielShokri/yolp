@@ -171,32 +171,72 @@ app.post("/api/restaurants", async (req, res) => {
 
 // Update Restaurant
 app.put("/api/restaurants/:id", async (req, res) => {
-  const { name, location, price_range, restaurant_image } = req.body;
+  const {
+    name,
+    location,
+    price_range,
+    restaurant_image,
+    closing_time,
+    opening_time,
+  } = req.body;
   try {
-    await cloudinary.uploader.upload(
-      restaurant_image,
-      {
-        upload_preset: "yolp",
-      },
-      async (error, { url }) => {
-        try {
-          const results = await db.query(
-            "UPDATE restaurants SET name=$1, location=$2, price_range=$3, restaurant_image=$4 WHERE id=$5 returning *",
-            [name, location, price_range, url, req.params.id]
-          );
+    if (restaurant_image) {
+      await cloudinary.uploader.upload(
+        restaurant_image,
+        {
+          upload_preset: "yolp",
+        },
+        async (error, { url }) => {
+          try {
+            const results = await db.query(
+              "UPDATE restaurants SET name=$1, location=$2, price_range=$3, restaurant_image=$4, closing_time=$5, opening_time=$6 WHERE id=$7 returning *",
+              [
+                name,
+                location,
+                price_range,
+                url,
+                closing_time,
+                opening_time,
+                req.params.id,
+              ]
+            );
 
-          res.status(200).json({
-            status: "sucsses",
-            results: results.rows.length,
-            data: {
-              restaurants: results.rows,
-            },
-          });
-        } catch (error) {
-          res.json(error);
+            res.status(200).json({
+              status: "sucsses",
+              results: results.rows.length,
+              data: {
+                restaurants: results.rows,
+              },
+            });
+          } catch (error) {
+            res.json(error);
+          }
         }
+      );
+    } else {
+      try {
+        const results = await db.query(
+          "UPDATE restaurants SET name=$1, location=$2, price_range=$3, closing_time=$4, opening_time=$5 WHERE id=$6 returning *",
+          [
+            name,
+            location,
+            price_range,
+            closing_time,
+            opening_time,
+            req.params.id,
+          ]
+        );
+        res.json({
+          status: "sucsses",
+          results: results.rows.length,
+          data: {
+            restaurants: results.rows,
+          },
+        });
+      } catch (error) {
+        res.json(error);
       }
-    );
+    }
   } catch (error) {
     res.status(400).json({
       status: "Fail",

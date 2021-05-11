@@ -23,15 +23,17 @@ import AddLocationIcon from "@material-ui/icons/AddLocation";
 import { PhotoCamera } from "@material-ui/icons";
 import EditIcon from "@material-ui/icons/Edit";
 import { routes, buildPath } from "./../utils/routes";
+import { useHistory } from "react-router";
 import "../styles/AddRestaurant.css";
 
-const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode, history }) => {
+const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
   const classes = useStylesForm();
+  const history = useHistory();
   const { setOpen, setOpenError } = useContext(AlertContext);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageSource, setImageSource] = useState("");
-  const [openingTime, setOpeningTime] = useState(null);
-  const [closingTime, setClosingTime] = useState(null);
+  const [openingTime, setOpeningTime] = useState(restaurant?.opening_time);
+  const [closingTime, setClosingTime] = useState(restaurant?.closing_time);
   let redirectTimeout;
 
   const handleCapture = ({ target }) => {
@@ -50,7 +52,7 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode, history }) => {
 
   useEffect(() => {
     return () => clearTimeout(redirectTimeout);
-  }, []);
+  }, [redirectTimeout]);
 
   const handleAddOrEditRestaurant = async () => {
     let restaurantCreatedId;
@@ -78,6 +80,7 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode, history }) => {
           `/${restaurant.id}`,
           inputsWithImage
         );
+        restaurantCreatedId = res.data.data.restaurants[0].id;
         if (res.status === 200) setOpen(true);
         setTimeout(() => {
           setIsEditMode(!isEditMode);

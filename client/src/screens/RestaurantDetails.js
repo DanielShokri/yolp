@@ -13,6 +13,8 @@ import { routes, buildPath } from "./../utils/routes";
 import { useHistory } from "react-router";
 import "../styles/RestaurantDetails.css";
 import { format } from "date-fns";
+import toDate from "date-fns/toDate";
+import parseISO from "date-fns/parseISO";
 import { he } from "date-fns/locale";
 
 const RestaurantDetails = (props) => {
@@ -20,10 +22,7 @@ const RestaurantDetails = (props) => {
   const { match } = props;
   const restaurantId = match.params.id;
   const [restaurant, setRestaurant] = useState({});
-  console.log(
-    "🚀 ~ file: RestaurantDetails.js ~ line 21 ~ RestaurantDetails ~ restaurant",
-    restaurant
-  );
+
   const [restaurantReviews, setRestaurantReviews] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -42,6 +41,25 @@ const RestaurantDetails = (props) => {
 
     fetchData();
   }, [restaurantId, isEditMode]);
+
+  useEffect(() => {
+    if (Object.keys(restaurant).length !== 0) {
+      const time = format(new Date(), "HH:mm");
+
+      const startTime = format(new Date(restaurant.opening_time), "HH:mm");
+
+      const endTime = format(new Date(restaurant.closing_time), "HH:mm");
+
+      // const opening = Date.parse(restaurant.opening_time);
+      // const closing = Date.parse(restaurant.closing_time);
+
+      if (time >= startTime && time <= endTime) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+    }
+  }, [restaurant]);
 
   return (
     <>
@@ -73,12 +91,12 @@ const RestaurantDetails = (props) => {
               />
               <span style={{ fontWeight: "700" }}>
                 {restaurant.opening_time &&
-                  format(new Date(restaurant.opening_time), "h:mm", {
+                  format(new Date(restaurant.opening_time), "HH:mm", {
                     locale: he,
                   })}{" "}
                 -
                 {restaurant.opening_time &&
-                  format(new Date(restaurant.closing_time), "h:mm", {
+                  format(new Date(restaurant.closing_time), "HH:mm", {
                     locale: he,
                   })}
               </span>
