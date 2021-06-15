@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -16,6 +16,10 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import { usersContext } from "./../context/userContext";
+import { buildPath, routes } from "./../utils/routes";
+import useLocalStorage from "./../utils/useLocalStorage";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -76,45 +80,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
+  const { isAuthenticated } = useContext(usersContext);
+  const [user, setUser] = useLocalStorage("user");
+  const history = useHistory();
+
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -135,16 +116,30 @@ const Header = () => {
         </IconButton>
         <p>Notifications</p>
       </MenuItem> */}
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
+      {isAuthenticated ? (
+        <MenuItem
+          onClick={() => {
+            history.push(buildPath(routes.userProfile, { id: user?.id }));
+          }}
         >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
+          Hi, {user.name[0].toUpperCase() + user.name.substring(1)}
+        </MenuItem>
+      ) : (
+        <MenuItem>
+          <Link className={classes.noLinkTextDec} to={routes.login}>
+            Login
+          </Link>
+        </MenuItem>
+      )}
+      <MenuItem>
+        <Link className={classes.noLinkTextDec} to={routes.homePage}>
+          Home
+        </Link>
+      </MenuItem>
+      <MenuItem>
+        <Link className={classes.noLinkTextDec} to={routes.addRestaurant}>
+          Add Restaurant
+        </Link>
       </MenuItem>
     </Menu>
   );
@@ -158,35 +153,37 @@ const Header = () => {
               YOLP
             </Link>
           </Typography>
-          <div className={classes.marginLeftButtons}>
-            <Button>
-              <Link className={classes.noLinkTextDec} to="/">
-                Home
-              </Link>
-            </Button>
-            <Button>
-              <Link className={classes.noLinkTextDec} to="/restaurants/add">
-                Add Restaurant
-              </Link>
-            </Button>
+          <div className={classes.sectionDesktop}>
+            <div className={classes.marginLeftButtons}>
+              <Button>
+                <Link className={classes.noLinkTextDec} to="/">
+                  Home
+                </Link>
+              </Button>
+              <Button>
+                <Link className={classes.noLinkTextDec} to="/restaurants/add">
+                  Add Restaurant
+                </Link>
+              </Button>
+            </div>
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {/* <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {isAuthenticated ? (
+              <Button
+                onClick={() => {
+                  history.push(buildPath(routes.userProfile, { id: user.id }));
+                }}
+              >
+                Hi, {user.name[0].toUpperCase() + user.name.substring(1)}
+              </Button>
+            ) : (
+              <Button>
+                <Link className={classes.noLinkTextDec} to={routes.login}>
+                  Login
+                </Link>
+              </Button>
+            )}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -202,7 +199,7 @@ const Header = () => {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
+      {/* {renderMenu} */}
     </div>
   );
 };

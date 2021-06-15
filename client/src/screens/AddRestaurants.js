@@ -68,7 +68,6 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
     if (!isEditMode) {
       try {
         const res = await restaruantsApi.post("/", inputsWithImage);
-        restaurantCreatedId = res.data.data.restaurants[0].id;
         if (res.status === 200) setOpen(true);
       } catch (error) {
         setOpenError(true);

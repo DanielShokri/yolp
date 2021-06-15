@@ -1,38 +1,62 @@
+import { useEffect, useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import authApi from "./api/authApi";
+// Screens
 import AddRestaurants from "./screens/AddRestaurants";
 import Header from "./components/Header";
 import HomePage from "./screens/HomePage";
 import RestaurantDetails from "./screens/RestaurantDetails";
 import AddRating from "./screens/AddRating";
 import SearchResults from "./screens/SearchResults";
+import RegisterPage from "./screens/Register";
+import UserProfile from "./screens/UserProfile";
+// Materiel ui
 import { Grid } from "@material-ui/core";
-import { RestaurantsContextProvider } from "./context/RestaruantsContext";
-import { AlertContextProvider } from "./context/AlertContext";
 import { routes } from "./utils/routes";
+import LoginPage from "./screens/Login";
+// Context
+import { usersContext } from "./context/userContext";
+import useLocalStorage from "./utils/useLocalStorage";
 
-function App() {
+function App(props) {
+  const [user, setUser] = useLocalStorage("user");
+  const { setIsAuthenticated,  isAuthenticated } = useContext(usersContext);
+
+  useEffect(() => {
+    async function checkIfAuth() {
+      try {
+        const res = await authApi.get("/is-verify", {
+          headers: { token: user.token },
+        });
+        setIsAuthenticated(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    checkIfAuth();
+  }, []);
+
   return (
-    <RestaurantsContextProvider>
-      <AlertContextProvider>
-        <div className="App">
-          <Router>
-            <Header />
-            <Grid align="center">
-              <Switch>
-                <Route exact path={routes.homePage} component={HomePage} />
-                <Route path={routes.addRestaurant} component={AddRestaurants} />
-                <Route
-                  path={routes.restaurantDetails}
-                  component={RestaurantDetails}
-                />
-                <Route path={routes.addReview} component={AddRating} />
-                <Route path={routes.searchResults} component={SearchResults} />
-              </Switch>
-            </Grid>
-          </Router>
-        </div>
-      </AlertContextProvider>
-    </RestaurantsContextProvider>
+    <div className="App">
+      <Router>
+        <Header />
+        <Grid align="center">
+          <Switch>
+            <Route exact path={routes.homePage} component={HomePage} />
+            <Route path={routes.addRestaurant} component={AddRestaurants} />
+            <Route
+              path={routes.restaurantDetails}
+              component={RestaurantDetails}
+            />
+            <Route path={routes.addReview} component={AddRating} />
+            <Route path={routes.searchResults} component={SearchResults} />
+            <Route path={routes.login} component={LoginPage} />
+            <Route path={routes.register} component={RegisterPage} />
+            <Route path={routes.userProfile} component={UserProfile} />
+          </Switch>
+        </Grid>
+      </Router>
+    </div>
   );
 }
 

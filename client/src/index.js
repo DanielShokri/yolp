@@ -5,6 +5,9 @@ import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import { UsersContextProvider } from "./context/userContext";
+import { RestaurantsContextProvider } from "./context/RestaruantsContext";
+import { AlertContextProvider } from "./context/AlertContext";
 import "./index.css";
 
 const theme = createMuiTheme();
@@ -23,7 +26,13 @@ ReactDOM.render(
   // <React.StrictMode>
   <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <ThemeProvider theme={theme}>
-      <App />
+      <RestaurantsContextProvider>
+        <AlertContextProvider>
+          <UsersContextProvider>
+            <App />
+          </UsersContextProvider>
+        </AlertContextProvider>
+      </RestaurantsContextProvider>
     </ThemeProvider>
   </MuiPickersUtilsProvider>,
 
