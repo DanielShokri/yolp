@@ -17,10 +17,13 @@ import LoginPage from "./screens/Login";
 // Context
 import { usersContext } from "./context/userContext";
 import useLocalStorage from "./utils/useLocalStorage";
+import { AlertContext } from "./context/AlertContext";
+import { AlertInfo } from "./components/Alert";
 
 function App(props) {
   const [user, setUser] = useLocalStorage("user");
-  const { setIsAuthenticated,  isAuthenticated } = useContext(usersContext);
+  const { setIsAuthenticated } = useContext(usersContext);
+  const { setOpenInfo } = useContext(AlertContext);
 
   useEffect(() => {
     async function checkIfAuth() {
@@ -30,7 +33,7 @@ function App(props) {
         });
         setIsAuthenticated(res.data);
       } catch (error) {
-        console.log(error);
+        setOpenInfo(true);
       }
     }
     checkIfAuth();
@@ -40,6 +43,7 @@ function App(props) {
     <div className="App">
       <Router>
         <Header />
+        <AlertInfo>Sign In to enjoy the full features of the site!</AlertInfo>
         <Grid align="center">
           <Switch>
             <Route exact path={routes.homePage} component={HomePage} />

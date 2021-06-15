@@ -15,7 +15,7 @@ import { KeyboardTimePicker } from "@material-ui/pickers";
 import restaruantsApi from "../api/restaruantsApi";
 import useForm from "../utils/useForm";
 import { useContext } from "react";
-import { AlertFail, AlertSuccsess } from "./../components/Alert";
+import { AlertFail, AlertSuccess } from "./../components/Alert";
 import { AlertContext } from "./../context/AlertContext";
 import { options, useStylesForm } from "./../utils/constants";
 import HeroSection from "../components/HeroSection";
@@ -100,13 +100,13 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
 
   return (
     <>
-      <AlertSuccsess>
+      <AlertSuccess>
         {isEditMode ? (
           <>{inputs.name} was updated successfully</>
         ) : (
           <>{inputs.name} was created successfully</>
         )}
-      </AlertSuccsess>
+      </AlertSuccess>
       <AlertFail />
 
       <HeroSection>

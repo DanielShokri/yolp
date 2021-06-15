@@ -2,7 +2,7 @@ import Card from "./Card";
 import restaruantApi from "../api/restaruantsApi";
 import { Typography, Grid, Button } from "@material-ui/core";
 import { useState, useContext } from "react";
-import { AlertSuccsess, AlertFail } from "./Alert";
+import { AlertSuccess, AlertFail } from "./Alert";
 import { AlertContext } from "./../context/AlertContext";
 import { RestaurantsContext } from "./../context/RestaruantsContext";
 
@@ -36,9 +36,9 @@ const RestaurantsList = ({ restaurantsList, isSerachList }) => {
 
   return (
     <div className="table-container">
-      <AlertSuccsess>
+      <AlertSuccess>
         {restaurantToDelete.name} was successfully deleted!
-      </AlertSuccsess>
+      </AlertSuccess>
       <AlertFail />
       {isSerachList ? (
         <Typography variant="h4" className="m-30">

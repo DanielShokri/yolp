@@ -11,7 +11,7 @@ import {
   Container,
 } from "@material-ui/core";
 import RateReviewIcon from "@material-ui/icons/RateReview";
-import { AlertSuccsess, AlertFail } from "./../components/Alert";
+import { AlertSuccess, AlertFail } from "./../components/Alert";
 import { reviewOptions } from "../utils/constants";
 import { AlertContext } from "./../context/AlertContext";
 import useForm from "./../utils/useForm";
@@ -58,7 +58,7 @@ const AddRating = (props) => {
 
   return (
     <>
-      <AlertSuccsess>The review was posted successfully </AlertSuccsess>
+      <AlertSuccess>The review was posted successfully </AlertSuccess>
       <AlertFail />
 
       <HeroSection>
