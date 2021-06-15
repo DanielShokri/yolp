@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-const useForm = (callback, defualtInputs) => {
+const useForm = (callback, defaultInputs) => {
   const [inputs, setInputs] = useState(
-    defualtInputs && Object.keys(defualtInputs).length !== 0
-      ? defualtInputs
+    defaultInputs && Object.keys(defaultInputs).length !== 0
+      ? defaultInputs
       : {}
   );
 

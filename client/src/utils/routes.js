@@ -2,6 +2,9 @@ import pathToRegexp from "path-to-regexp";
 
 export const routes = {
   homePage: "/",
+  login: "/login",
+  register: "/register",
+  userProfile: "/profile/:id",
   restaurantDetails: "/restaurant/:id",
   addRestaurant: "/restaurants/add",
   addReview: "/restaruant/:id/review",

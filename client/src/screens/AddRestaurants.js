@@ -68,7 +68,6 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
     if (!isEditMode) {
       try {
         const res = await restaruantsApi.post("/", inputsWithImage);
-        restaurantCreatedId = res.data.data.restaurants[0].id;
         if (res.status === 200) setOpen(true);
       } catch (error) {
         setOpenError(true);
@@ -80,7 +79,6 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
           `/${restaurant.id}`,
           inputsWithImage
         );
-        restaurantCreatedId = res.data.data.restaurants[0].id;
         if (res.status === 200) setOpen(true);
         setTimeout(() => {
           setIsEditMode(!isEditMode);
@@ -91,9 +89,7 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
     }
 
     redirectTimeout = setTimeout(() => {
-      history.push(
-        buildPath(routes.restaurantDetails, { id: restaurantCreatedId })
-      );
+      history.push(buildPath(routes.restaurantDetails, { id: restaurant.id }));
     }, 3000);
   };
 
