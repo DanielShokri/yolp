@@ -1,5 +1,5 @@
+import { useEffect, useState, useContext } from "react";
 import { Typography, Grid, Button, Divider, Chip } from "@material-ui/core";
-import { useEffect, useState } from "react";
 import restaruantsApi from "../api/restaruantsApi";
 import HeroSection from "../components/HeroSection";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
@@ -14,17 +14,27 @@ import { useHistory } from "react-router";
 import "../styles/RestaurantDetails.css";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
+import { usersContext } from "./../context/userContext";
+import { AlertContext } from "./../context/AlertContext";
+import { AlertFail } from "../components/Alert";
+import usersApi from "../api/usersApi";
+import { AlertSuccess } from "./../components/Alert";
+import { isVerify } from "./../utils/utils";
 
 const RestaurantDetails = (props) => {
   let history = useHistory();
   const { match } = props;
   const restaurantId = match.params.id;
   const [restaurant, setRestaurant] = useState({});
+  const { isAuthenticated, user } = useContext(usersContext);
+
+  const { setOpenError, setOpen } = useContext(AlertContext);
 
   const [restaurantReviews, setRestaurantReviews] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showMoreCount, setShowMoreCount] = useState(3);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -39,6 +49,28 @@ const RestaurantDetails = (props) => {
 
     fetchData();
   }, [restaurantId, isEditMode]);
+
+  const handleSaveOrDeleteToFavorite = async () => {
+    try {
+      if (isAuthenticated && user.id) {
+        await usersApi.put("/add-favorite", {
+          restaurant_id: restaurantId,
+          user_id: user.id,
+        });
+        setOpen(true);
+      } else {
+        setErrorMsg("You need to sign in to add favorites!");
+        setOpenError(true);
+      }
+    } catch ({ response }) {
+      // TODO verify every request that need auth
+      // isVerify(response.data.msg);
+      setErrorMsg(
+        response.data.msg ? response.data.msg : "Already in favorites!"
+      );
+      setOpenError(true);
+    }
+  };
 
   useEffect(() => {
     if (Object.keys(restaurant).length !== 0) {
@@ -61,6 +93,8 @@ const RestaurantDetails = (props) => {
 
   return (
     <>
+      <AlertFail>{errorMsg}</AlertFail>
+      <AlertSuccess>Successfully added to your favorites!</AlertSuccess>
       {!isEditMode ? (
         <>
           <HeroSection height="400">
@@ -124,6 +158,7 @@ const RestaurantDetails = (props) => {
                   color="default"
                   size="large"
                   startIcon={<BookmarkBorderIcon fontSize="large" />}
+                  onClick={handleSaveOrDeleteToFavorite}
                 >
                   SAVE
                 </Button>

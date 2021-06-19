@@ -16,20 +16,19 @@ import { routes } from "./utils/routes";
 import LoginPage from "./screens/Login";
 // Context
 import { usersContext } from "./context/userContext";
-import useLocalStorage from "./utils/useLocalStorage";
 import { AlertContext } from "./context/AlertContext";
 import { AlertInfo } from "./components/Alert";
 
 function App(props) {
-  const [user, setUser] = useLocalStorage("user");
-  const { setIsAuthenticated } = useContext(usersContext);
+  const { setIsAuthenticated, isAuthenticated, user } =
+    useContext(usersContext);
   const { setOpenInfo } = useContext(AlertContext);
 
   useEffect(() => {
     async function checkIfAuth() {
       try {
         const res = await authApi.get("/is-verify", {
-          headers: { token: user.token },
+          headers: { Authorization: user?.token },
         });
         setIsAuthenticated(res.data);
       } catch (error) {
@@ -37,7 +36,7 @@ function App(props) {
       }
     }
     checkIfAuth();
-  }, []);
+  }, [user?.token]);
 
   return (
     <div className="App">
@@ -54,8 +53,14 @@ function App(props) {
             />
             <Route path={routes.addReview} component={AddRating} />
             <Route path={routes.searchResults} component={SearchResults} />
-            <Route path={routes.login} component={LoginPage} />
-            <Route path={routes.register} component={RegisterPage} />
+            <Route
+              path={routes.login}
+              component={isAuthenticated ? HomePage : LoginPage}
+            />
+            <Route
+              path={routes.register}
+              component={isAuthenticated ? HomePage : RegisterPage}
+            />
             <Route path={routes.userProfile} component={UserProfile} />
           </Switch>
         </Grid>

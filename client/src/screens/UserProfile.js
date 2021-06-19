@@ -11,7 +11,7 @@ const UserProfile = (props) => {
   const { setIsAuthenticated, isAuthenticated } = useContext(usersContext);
 
   useEffect(() => {
-    if (isAuthenticated && match.params.id === user.id) {
+    if (isAuthenticated && match.params?.id === user?.id) {
       return;
     } else {
       history.push(routes.homePage);

@@ -6,6 +6,7 @@ const jwtGenerator = require("../utils/jwt");
 const db = require("../db");
 const auth = require("../middleware/auth");
 const { registerSchema, loginSchema } = require("../utils/validation");
+const { isDuplicateFavorite } = require("../utils/functions");
 
 // Register
 router.post("/register", async (req, res) => {
@@ -55,7 +56,7 @@ router.post("/login", async (req, res) => {
     const user = await db.query("SELECT * FROM users WHERE email=$1", [email]);
 
     if (user.rowCount === 0) {
-      return res.status(401).send("Password or email is incorrect");
+      return res.status(401).json("Password or email is incorrect");
     }
     // 3.check if incoming password is the same as DB password
 
@@ -76,6 +77,51 @@ router.post("/login", async (req, res) => {
     } else {
       return res.status(500).json("Server error");
     }
+  }
+});
+
+router.put("/add-favorite", auth, async (req, res) => {
+  const { restaurant_id, user_id } = req.body;
+  try {
+    const favArray = await db.query("SELECT favorites FROM users WHERE id=$1", [
+      user_id,
+    ]);
+
+    const favoritesList = favArray.rows[0].favorites;
+
+    if (!isDuplicateFavorite(favoritesList, restaurant_id)) {
+      const results = await db.query(
+        `UPDATE users SET favorites = array_prepend($1, favorites) WHERE id = $2`,
+        [restaurant_id, user_id]
+      );
+      res.status(200).json("Added successfully to favorites!");
+    } else {
+      res.status(400).json("Already in favorites!");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+router.put("/remove-favorite", auth, async (req, res) => {
+  const { restaurant_id, user_id } = req.body;
+  try {
+    const favArray = await db.query("SELECT favorites FROM users WHERE id=$1", [
+      user_id,
+    ]);
+    const favoritesList = favArray.rows[0].favorites;
+
+    if (!isDuplicateFavorite(favoritesList, restaurant_id)) {
+      const results = await db.query(
+        `UPDATE users SET favorites = array_remove(favorites, $1) WHERE id = $2 returning *`,
+        [restaurant_id, user_id]
+      );
+      res.json(results);
+    } else {
+      res.status(400).json("Not in favorites!");
+    }
+  } catch (error) {
+    res.status(500).send("Server Error");
   }
 });
 

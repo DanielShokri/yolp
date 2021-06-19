@@ -66,7 +66,6 @@ function LoginPage(props) {
   const { history } = props;
   const classes = useStyles();
   const [isFormError, setIsFormError] = useState(false);
-  const [LoggedUser, setLoggedUser] = useLocalStorage("user");
 
   const { setUser, setIsAuthenticated } = useContext(usersContext);
 
@@ -75,7 +74,6 @@ function LoginPage(props) {
     try {
       const res = await authApi.post("/login", inputs);
       setUser(res.data);
-      setLoggedUser(res.data);
       setIsAuthenticated(true);
       history.push(routes.homePage);
     } catch (error) {

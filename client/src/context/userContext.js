@@ -1,10 +1,11 @@
 import { React, useState, createContext } from "react";
+import useLocalStorage from "./../utils/useLocalStorage";
 
 export const usersContext = createContext();
 
 export const UsersContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useLocalStorage("user");
 
   return (
     <usersContext.Provider

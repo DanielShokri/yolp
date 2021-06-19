@@ -246,7 +246,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Add Review to spesifc resaurant
-router.post("/api/restaurants/:id/addReview", async (req, res) => {
+router.post("/:id/addReview", async (req, res) => {
   const { name, review, rating } = req.body;
   try {
     const newReview = await db.query(
