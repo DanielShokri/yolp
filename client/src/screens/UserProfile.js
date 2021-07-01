@@ -7,8 +7,8 @@ import { routes } from "./../utils/routes";
 const UserProfile = (props) => {
   const { history, match } = props;
 
-  const [user, setUser] = useLocalStorage("user");
-  const { setIsAuthenticated, isAuthenticated } = useContext(usersContext);
+  const { setIsAuthenticated, isAuthenticated, user, setUser } =
+    useContext(usersContext);
 
   useEffect(() => {
     if (isAuthenticated && match.params?.id === user?.id) {

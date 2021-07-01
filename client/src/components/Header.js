@@ -80,8 +80,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
-  const { isAuthenticated } = useContext(usersContext);
-  const [user, setUser] = useLocalStorage("user");
+  const { isAuthenticated, user } = useContext(usersContext);
   const history = useHistory();
 
   const classes = useStyles();

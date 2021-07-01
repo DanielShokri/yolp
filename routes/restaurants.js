@@ -6,8 +6,6 @@ const { cloudinary } = require("../utils/cloudinary");
 // Get all restaurants
 router.get("/", async (req, res) => {
   try {
-    // const results = await db.query("select * from restaurants");
-
     const restaurantRatingData = await db.query(
       "select * from restaurants left join (select restaurant_id, COUNT(*) as review_count, TRUNC(AVG(rating),1) as average_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id;"
     );
@@ -55,6 +53,7 @@ router.get("/:id", async (req, res) => {
 // Search for a restaurant by name
 router.post("/search", async (req, res) => {
   const { query } = req.body;
+
   try {
     const results = await db.query(
       "select * FROM restaurants left join (select restaurant_id, COUNT(*) as review_count, TRUNC(AVG(rating),1) as average_rating from reviews group by restaurant_id) reviews on restaurants.id = reviews.restaurant_id WHERE to_tsvector(name) @@ to_tsquery($1)",
@@ -245,13 +244,13 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Add Review to spesifc resaurant
+// Add Review to specific restaurant
 router.post("/:id/addReview", async (req, res) => {
-  const { name, review, rating } = req.body;
+  const { name, review, rating, user_id } = req.body;
   try {
     const newReview = await db.query(
-      "INSERT INTO reviews (restaurant_id, name, review, rating) values($1, $2, $3, $4) returning *;",
-      [req.params.id, name, review, rating]
+      "INSERT INTO reviews (restaurant_id, name, review, rating, user_id) values($1, $2, $3, $4, $5) returning *;",
+      [req.params.id, name, review, rating, user_id]
     );
 
     res.status(201).json({

@@ -20,7 +20,7 @@ import { AlertContext } from "./context/AlertContext";
 import { AlertInfo } from "./components/Alert";
 
 function App(props) {
-  const { setIsAuthenticated, isAuthenticated, user } =
+  const { setIsAuthenticated, isAuthenticated, user, setUser } =
     useContext(usersContext);
   const { setOpenInfo } = useContext(AlertContext);
 
@@ -33,6 +33,7 @@ function App(props) {
         setIsAuthenticated(res.data);
       } catch (error) {
         setOpenInfo(true);
+        setUser({});
       }
     }
     checkIfAuth();

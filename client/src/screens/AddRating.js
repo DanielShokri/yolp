@@ -15,7 +15,7 @@ import { AlertSuccess, AlertFail } from "./../components/Alert";
 import { reviewOptions } from "../utils/constants";
 import { AlertContext } from "./../context/AlertContext";
 import useForm from "./../utils/useForm";
-import restaruantsApi from "../api/restaruantsApi";
+import restaurantsApi from "../api/restaurantsApi";
 import { useStylesForm } from "./../utils/constants";
 import { routes, buildPath } from "./../utils/routes";
 
@@ -29,7 +29,7 @@ const AddRating = (props) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await restaruantsApi.get(`/${restaurantId}`);
+        const { data } = await restaurantsApi.get(`/${restaurantId}`);
         setRestaurant(data.data.restaurant[0]);
       } catch (error) {
         setOpenError(true);
@@ -42,10 +42,10 @@ const AddRating = (props) => {
 
   const handleReviewPost = async () => {
     try {
-      const res = await restaruantsApi.post(
-        `/${restaurantId}/addReview`,
-        inputs
-      );
+      const res = await restaurantsApi.post(`/${restaurantId}/addReview`, {
+        ...inputs,
+        user_id: "8",
+      });
       if (res.status === 201) setOpen(true);
       else setOpenError(true);
     } catch (error) {

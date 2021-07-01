@@ -54,6 +54,10 @@ router.post("/login", async (req, res) => {
     await loginSchema.validateAsync(req.body);
     // 2.check if user exist (if not throw error)
     const user = await db.query("SELECT * FROM users WHERE email=$1", [email]);
+    const favorites = await db.query(
+      "SELECT * FROM favorites WHERE user_id=$1",
+      [user.rows[0].id]
+    );
 
     if (user.rowCount === 0) {
       return res.status(401).json("Password or email is incorrect");
@@ -70,7 +74,8 @@ router.post("/login", async (req, res) => {
 
     // return to client
     const { id, name } = user.rows[0];
-    res.json({ token, id, name, email });
+
+    res.json({ token, id, name, email, favorites: favorites.rows });
   } catch (error) {
     if (error.isJoi) {
       return res.status(422).json(error.details[0].message);
@@ -80,19 +85,48 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.put("/add-favorite", auth, async (req, res) => {
-  const { restaurant_id, user_id } = req.body;
+// User
+
+router.get("/user/:id", auth, async (req, res) => {
+  const userID = req.params.id;
   try {
-    const favArray = await db.query("SELECT favorites FROM users WHERE id=$1", [
-      user_id,
-    ]);
+    const user = await db.query(
+      "SELECT id, name, email FROM users WHERE id=$1",
+      [userID]
+    );
 
-    const favoritesList = favArray.rows[0].favorites;
+    const favorites = await db.query(
+      "SELECT * FROM favorites WHERE user_id=$1",
+      [req.params.id]
+    );
 
-    if (!isDuplicateFavorite(favoritesList, restaurant_id)) {
-      const results = await db.query(
-        `UPDATE users SET favorites = array_prepend($1, favorites) WHERE id = $2`,
-        [restaurant_id, user_id]
+    res.json({
+      user: user.rows[0],
+      favorites: favorites.rows,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// Favorites
+
+router.post("/add-favorite", auth, async (req, res) => {
+  const { restaurant, user_id } = req.body;
+  const { name, location, id, restaurant_image } = restaurant;
+  try {
+    const favArray = await db.query(
+      "SELECT restaurant_id FROM favorites WHERE user_id=$1",
+      [user_id]
+    );
+
+    const favoritesList = favArray.rows;
+
+    if (!isDuplicateFavorite(favoritesList, restaurant.id)) {
+      await db.query(
+        `INSERT INTO favorites (name, location, restaurant_id, restaurant_image, user_id) VALUES ($1, $2, $3, $4, $5)`,
+        [name, location, id, restaurant_image, user_id]
       );
       res.status(200).json("Added successfully to favorites!");
     } else {
@@ -103,17 +137,18 @@ router.put("/add-favorite", auth, async (req, res) => {
   }
 });
 
-router.put("/remove-favorite", auth, async (req, res) => {
+router.delete("/remove-favorite", auth, async (req, res) => {
   const { restaurant_id, user_id } = req.body;
   try {
-    const favArray = await db.query("SELECT favorites FROM users WHERE id=$1", [
-      user_id,
-    ]);
-    const favoritesList = favArray.rows[0].favorites;
+    const favArray = await db.query(
+      "SELECT restaurant_id FROM favorites WHERE user_id=$1",
+      [user_id]
+    );
+    const favoritesList = favArray.rows;
 
-    if (!isDuplicateFavorite(favoritesList, restaurant_id)) {
+    if (isDuplicateFavorite(favoritesList, restaurant_id)) {
       const results = await db.query(
-        `UPDATE users SET favorites = array_remove(favorites, $1) WHERE id = $2 returning *`,
+        "DELETE FROM favorites WHERE restaurant_id=$1 AND user_id=$2",
         [restaurant_id, user_id]
       );
       res.json(results);

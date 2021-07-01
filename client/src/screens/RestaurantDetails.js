@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext } from "react";
 import { Typography, Grid, Button, Divider, Chip } from "@material-ui/core";
-import restaruantsApi from "../api/restaruantsApi";
 import HeroSection from "../components/HeroSection";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
@@ -11,7 +10,6 @@ import StarRating from "../components/StarRating";
 import ReviewCard from "../components/ReviewCard";
 import { routes, buildPath } from "./../utils/routes";
 import { useHistory } from "react-router";
-import "../styles/RestaurantDetails.css";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { usersContext } from "./../context/userContext";
@@ -19,17 +17,23 @@ import { AlertContext } from "./../context/AlertContext";
 import { AlertFail } from "../components/Alert";
 import usersApi from "../api/usersApi";
 import { AlertSuccess } from "./../components/Alert";
-import { isVerify } from "./../utils/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { setRestaurant } from "../features/restaurants/restaurantsSlice";
+import { useFetchRestaurantQuery } from "../features/api/restaurantsApiSlice";
+import "../styles/RestaurantDetails.css";
 
 const RestaurantDetails = (props) => {
   let history = useHistory();
   const { match } = props;
   const restaurantId = match.params.id;
-  const [restaurant, setRestaurant] = useState({});
   const { isAuthenticated, user } = useContext(usersContext);
-
   const { setOpenError, setOpen } = useContext(AlertContext);
 
+  // Request the selected restaurant details
+  const dispatch = useDispatch();
+  const { restaurant } = useSelector((state) => state.restaurants);
+  const { data, isSuccess, refetch } = useFetchRestaurantQuery(restaurantId);
+  // States
   const [restaurantReviews, setRestaurantReviews] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -37,26 +41,26 @@ const RestaurantDetails = (props) => {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const { data } = await restaruantsApi.get(`/${restaurantId}`);
-        setRestaurant(data.data.restaurant[0]);
-        setRestaurantReviews(data.data.reviews);
-      } catch (error) {
-        console.log(error);
-      }
+    if (isSuccess) {
+      dispatch(setRestaurant(data.data.restaurant[0]));
+      setRestaurantReviews(data.data.reviews);
     }
+  }, [isSuccess, restaurant, isEditMode]);
 
-    fetchData();
-  }, [restaurantId, isEditMode]);
-
-  const handleSaveOrDeleteToFavorite = async () => {
+  const handleSaveOrDeleteFavorite = async (isDelete) => {
     try {
       if (isAuthenticated && user.id) {
-        await usersApi.put("/add-favorite", {
-          restaurant_id: restaurantId,
-          user_id: user.id,
-        });
+        if (!isDelete) {
+          await usersApi.post("/add-favorite", {
+            restaurant,
+            user_id: user.id,
+          });
+        } else {
+          await usersApi.delete("/remove-favorite", {
+            restaurant_id: restaurantId,
+            user_id: user.id,
+          });
+        }
         setOpen(true);
       } else {
         setErrorMsg("You need to sign in to add favorites!");
@@ -152,16 +156,45 @@ const RestaurantDetails = (props) => {
                 >
                   Write a Review
                 </Button>
-                <Button
-                  className="button-spacing"
-                  variant="outlined"
-                  color="default"
-                  size="large"
-                  startIcon={<BookmarkBorderIcon fontSize="large" />}
-                  onClick={handleSaveOrDeleteToFavorite}
-                >
-                  SAVE
-                </Button>
+                {Object.keys(user).length !== 0 ? (
+                  user?.favorites.some(
+                    (fav) => fav.restaurant_id === restaurantId
+                  ) ? (
+                    <Button
+                      className="button-spacing"
+                      variant="outlined"
+                      color="default"
+                      size="large"
+                      startIcon={<BookmarkBorderIcon fontSize="large" />}
+                      onClick={handleSaveOrDeleteFavorite}
+                    >
+                      remove from favorites
+                    </Button>
+                  ) : (
+                    <Button
+                      className="button-spacing"
+                      variant="outlined"
+                      color="default"
+                      size="large"
+                      startIcon={<BookmarkBorderIcon fontSize="large" />}
+                      onClick={handleSaveOrDeleteFavorite}
+                    >
+                      add to favorites
+                    </Button>
+                  )
+                ) : (
+                  <Button
+                    className="button-spacing"
+                    variant="outlined"
+                    color="default"
+                    size="large"
+                    startIcon={<BookmarkBorderIcon fontSize="large" />}
+                    onClick={handleSaveOrDeleteFavorite}
+                  >
+                    add to favorites
+                  </Button>
+                )}
+
                 <Button
                   className="button-spacing"
                   variant="outlined"
@@ -222,9 +255,10 @@ const RestaurantDetails = (props) => {
         </>
       ) : (
         <AddRestaurants
-          restaurant={restaurant}
+          restaurantEdit={restaurant}
           isEditMode={isEditMode}
           setIsEditMode={setIsEditMode}
+          refetch={refetch}
         />
       )}
     </>

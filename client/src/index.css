@@ -47,14 +47,26 @@ label.search-label {
   margin: 50px 0 30px 0;
 }
 
-/* NavBar */
-/* 
-.MuiToolbar-root {
-  position: absolute !important;
-  z-index: 1 !important;
-  color: white !important;
-} */
+/* Spinner */
+.spinner {
+  width: 64px;
+  height: 64px;
+  border: 8px solid;
+  border-color: #3d5af1 transparent #3d5af1 transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  /* Center vertically and horizontally */
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  margin: 80px 0 0 -25px; /* apply negative top and left margins to truly center the element */
+}
 
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 /* Media Queries */
 
 @media screen and (max-width: 768px) {

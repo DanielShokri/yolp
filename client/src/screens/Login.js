@@ -16,7 +16,6 @@ import useForm from "./../utils/useForm";
 import authApi from "../api/authApi";
 import { useState, useContext } from "react";
 import { usersContext } from "./../context/userContext";
-import useLocalStorage from "./../utils/useLocalStorage";
 
 function Copyright() {
   return (

@@ -1,12 +1,12 @@
 import Card from "./Card";
-import restaruantApi from "../api/restaruantsApi";
+import restaruantApi from "../api/restaurantsApi";
 import { Typography, Grid, Button } from "@material-ui/core";
 import { useState, useContext } from "react";
 import { AlertSuccess, AlertFail } from "./Alert";
 import { AlertContext } from "./../context/AlertContext";
 import { RestaurantsContext } from "./../context/RestaruantsContext";
 
-const RestaurantsList = ({ restaurantsList, isSerachList }) => {
+const RestaurantsList = ({ restaurantsList, isSearchList }) => {
   const [showMoreCount, setShowMoreCount] = useState(6);
   const [restaurantToDelete, setRestaurantToDelete] = useState({});
   const { setOpen, setOpenError } = useContext(AlertContext);
@@ -40,7 +40,7 @@ const RestaurantsList = ({ restaurantsList, isSerachList }) => {
         {restaurantToDelete.name} was successfully deleted!
       </AlertSuccess>
       <AlertFail />
-      {isSerachList ? (
+      {isSearchList ? (
         <Typography variant="h4" className="m-30">
           Search Results ({restaurantsList.length})
         </Typography>
