@@ -12,10 +12,9 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { KeyboardTimePicker } from "@material-ui/pickers";
-import restaruantsApi from "../api/restaruantsApi";
 import useForm from "../utils/useForm";
 import { useContext } from "react";
-import { AlertFail, AlertSuccsess } from "./../components/Alert";
+import { AlertFail, AlertSuccess } from "./../components/Alert";
 import { AlertContext } from "./../context/AlertContext";
 import { options, useStylesForm } from "./../utils/constants";
 import HeroSection from "../components/HeroSection";
@@ -25,16 +24,37 @@ import EditIcon from "@material-ui/icons/Edit";
 import { routes, buildPath } from "./../utils/routes";
 import { useHistory } from "react-router";
 import "../styles/AddRestaurant.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handleAddRestaurant,
+  handleEditRestaurant,
+} from "../features/restaurants/restaurantsSlice";
+import { useFetchRestaurantsQuery } from "../features/api/restaurantsApiSlice";
+import { setRestaurants } from "../features/restaurants/restaurantsSlice";
 
-const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
+const AddRestaurants = ({
+  restaurantEdit,
+  isEditMode,
+  setIsEditMode,
+  refetch,
+}) => {
   const classes = useStylesForm();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { setOpen, setOpenError } = useContext(AlertContext);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageSource, setImageSource] = useState("");
-  const [openingTime, setOpeningTime] = useState(restaurant?.opening_time);
-  const [closingTime, setClosingTime] = useState(restaurant?.closing_time);
+  const [openingTime, setOpeningTime] = useState(restaurantEdit?.opening_time);
+  const [closingTime, setClosingTime] = useState(restaurantEdit?.closing_time);
+  const { restaurant } = useSelector((state) => state.restaurants);
+  const { data, isFetching, isSuccess } = useFetchRestaurantsQuery();
   let redirectTimeout;
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(setRestaurants(data.data.restaurants));
+    }
+  }, [data, isSuccess]);
 
   const handleCapture = ({ target }) => {
     const image = target.files[0];
@@ -55,7 +75,6 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
   }, [redirectTimeout]);
 
   const handleAddOrEditRestaurant = async () => {
-    let restaurantCreatedId;
     const inputsWithImage = imageSource
       ? {
           ...inputs,
@@ -67,19 +86,31 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
 
     if (!isEditMode) {
       try {
-        const res = await restaruantsApi.post("/", inputsWithImage);
-        if (res.status === 200) setOpen(true);
+        dispatch(handleAddRestaurant(inputsWithImage)).then((data) => {
+          setOpen(true);
+          redirectTimeout = setTimeout(() => {
+            history.push(
+              buildPath(routes.restaurantDetails, {
+                id: Object.keys(restaurant).length !== 0 && restaurant?.id,
+              })
+            );
+          }, 2000);
+        });
       } catch (error) {
         setOpenError(true);
         console.log(error);
       }
     } else {
       try {
-        const res = await restaruantsApi.put(
-          `/${restaurant.id}`,
-          inputsWithImage
-        );
-        if (res.status === 200) setOpen(true);
+        dispatch(
+          handleEditRestaurant({
+            inputsWithImage,
+            restaurantId: restaurantEdit.id,
+          })
+        ).then(() => {
+          setOpen(true);
+        });
+
         setTimeout(() => {
           setIsEditMode(!isEditMode);
         }, 2000);
@@ -87,32 +118,36 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
         console.log(error);
       }
     }
-
-    redirectTimeout = setTimeout(() => {
-      history.push(buildPath(routes.restaurantDetails, { id: restaurant.id }));
-    }, 3000);
+    if (isEditMode) {
+      redirectTimeout = setTimeout(() => {
+        history.push(
+          buildPath(routes.restaurantDetails, { id: restaurantEdit.id })
+        );
+        refetch();
+      }, 3000);
+    }
   };
 
   const { inputs, handleInputChange, handleSubmit } = useForm(
     handleAddOrEditRestaurant,
-    restaurant
+    restaurantEdit
   );
 
   return (
     <>
-      <AlertSuccsess>
+      <AlertSuccess>
         {isEditMode ? (
           <>{inputs.name} was updated successfully</>
         ) : (
           <>{inputs.name} was created successfully</>
         )}
-      </AlertSuccsess>
+      </AlertSuccess>
       <AlertFail />
 
       <HeroSection>
         <Typography variant="h3" className="m-30">
           {isEditMode ? (
-            <p>Edit Restaurant - {restaurant.name}</p>
+            <p>Edit Restaurant - {restaurantEdit.name}</p>
           ) : (
             "Add Restaurant"
           )}
@@ -128,7 +163,7 @@ const AddRestaurants = ({ restaurant, isEditMode, setIsEditMode }) => {
             </Avatar>
             <Typography className="mtb-20" component="h1" variant="h5">
               {isEditMode ? (
-                <p>Edit Restaurant - {restaurant.name}</p>
+                <p>Edit Restaurant - {restaurantEdit.name}</p>
               ) : (
                 "Add Restaurant"
               )}

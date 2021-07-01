@@ -1,26 +1,22 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import HeroSection from "../components/HeroSection";
 import { Divider } from "@material-ui/core";
 import RestaurantsList from "../components/RestaurantsList";
-import restaruantApi from "../api/restaruantsApi";
-import { RestaurantsContext } from "./../context/RestaruantsContext";
 import Search from "./../components/Search";
+import { useDispatch, useSelector } from "react-redux";
+import { setRestaurants } from "../features/restaurants/restaurantsSlice";
+import { useFetchRestaurantsQuery } from "../features/api/restaurantsApiSlice";
 
 const HomePage = () => {
-  const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+  const dispatch = useDispatch();
+  const { restaurants } = useSelector((state) => state.restaurants);
+  const { data, isFetching, isSuccess } = useFetchRestaurantsQuery();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await restaruantApi.get("/");
-        setRestaurants(res.data.data.restaurants);
-      } catch (error) {
-        console.log(error);
-      }
+    if (isSuccess) {
+      dispatch(setRestaurants(data.data.restaurants));
     }
-
-    fetchData();
-  }, [setRestaurants]);
+  }, [data, isSuccess]);
 
   return (
     <div>
@@ -29,7 +25,13 @@ const HomePage = () => {
         <Search />
       </HeroSection>
       <Divider />
-      <RestaurantsList restaurantsList={restaurants} />
+      {isFetching ? (
+        <div style={{ position: "relative" }}>
+          <div className="spinner"></div>
+        </div>
+      ) : (
+        <RestaurantsList restaurantsList={restaurants} />
+      )}
     </div>
   );
 };

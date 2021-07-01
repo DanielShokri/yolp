@@ -1,27 +1,20 @@
-import { useEffect, useContext, useState } from "react";
-import restaruantsApi from "../api/restaruantsApi";
-import { RestaurantsContext } from "./../context/RestaruantsContext";
+import { useEffect } from "react";
 import HeroSection from "./../components/HeroSection";
 import { Typography } from "@material-ui/core";
 import RestaurantsList from "./../components/RestaurantsList";
-import { routes } from "./../utils/routes";
+import { useSelector, useDispatch } from "react-redux";
+import { getRestaurantsByQuery } from "./../features/restaurants/restaurantsSlice";
 
 const SearchResults = ({ history }) => {
-  const { query } = useContext(RestaurantsContext);
-  const [results, setResults] = useState([]);
+  const { query, restaurants } = useSelector((state) => state.restaurants);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const handleSearch = async () => {
-      if (!query.query) history.push(routes.homePage);
-      try {
-        const { data } = await restaruantsApi.post(`/search`, query);
-        setResults(data.data.restaurants);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    handleSearch();
-  }, [query, history]);
+    if (!query) {
+      history.push("/");
+    }
+    dispatch(getRestaurantsByQuery(query));
+  }, [query]);
 
   return (
     <div>
@@ -34,8 +27,8 @@ const SearchResults = ({ history }) => {
           SEARCH RESULTS FOR: <br /> {query?.query}
         </Typography>
       </HeroSection>
-      {Object.keys(results).length !== 0 ? (
-        <RestaurantsList restaurantsList={results} isSerachList />
+      {Object.keys(restaurants).length !== 0 ? (
+        <RestaurantsList restaurantsList={restaurants} isSearchList />
       ) : (
         <>
           <Typography

@@ -16,30 +16,34 @@ import { routes } from "./utils/routes";
 import LoginPage from "./screens/Login";
 // Context
 import { usersContext } from "./context/userContext";
-import useLocalStorage from "./utils/useLocalStorage";
+import { AlertContext } from "./context/AlertContext";
+import { AlertInfo } from "./components/Alert";
 
 function App(props) {
-  const [user, setUser] = useLocalStorage("user");
-  const { setIsAuthenticated,  isAuthenticated } = useContext(usersContext);
+  const { setIsAuthenticated, isAuthenticated, user, setUser } =
+    useContext(usersContext);
+  const { setOpenInfo } = useContext(AlertContext);
 
   useEffect(() => {
     async function checkIfAuth() {
       try {
         const res = await authApi.get("/is-verify", {
-          headers: { token: user.token },
+          headers: { Authorization: user?.token },
         });
         setIsAuthenticated(res.data);
       } catch (error) {
-        console.log(error);
+        setOpenInfo(true);
+        setUser({});
       }
     }
     checkIfAuth();
-  }, []);
+  }, [user?.token]);
 
   return (
     <div className="App">
       <Router>
         <Header />
+        <AlertInfo>Sign In to enjoy the full features of the site!</AlertInfo>
         <Grid align="center">
           <Switch>
             <Route exact path={routes.homePage} component={HomePage} />
@@ -50,8 +54,14 @@ function App(props) {
             />
             <Route path={routes.addReview} component={AddRating} />
             <Route path={routes.searchResults} component={SearchResults} />
-            <Route path={routes.login} component={LoginPage} />
-            <Route path={routes.register} component={RegisterPage} />
+            <Route
+              path={routes.login}
+              component={isAuthenticated ? HomePage : LoginPage}
+            />
+            <Route
+              path={routes.register}
+              component={isAuthenticated ? HomePage : RegisterPage}
+            />
             <Route path={routes.userProfile} component={UserProfile} />
           </Switch>
         </Grid>

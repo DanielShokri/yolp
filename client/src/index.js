@@ -8,10 +8,11 @@ import DateFnsUtils from "@date-io/date-fns";
 import { UsersContextProvider } from "./context/userContext";
 import { RestaurantsContextProvider } from "./context/RestaruantsContext";
 import { AlertContextProvider } from "./context/AlertContext";
+import { Provider } from "react-redux";
+import store from "./store/store";
 import "./index.css";
 
 const theme = createMuiTheme();
-
 theme.typography.h3 = {
   fontSize: "1.4rem",
   "@media (min-width:600px)": {
@@ -26,13 +27,15 @@ ReactDOM.render(
   // <React.StrictMode>
   <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <ThemeProvider theme={theme}>
-      <RestaurantsContextProvider>
-        <AlertContextProvider>
-          <UsersContextProvider>
-            <App />
-          </UsersContextProvider>
-        </AlertContextProvider>
-      </RestaurantsContextProvider>
+      <Provider store={store}>
+        <RestaurantsContextProvider>
+          <AlertContextProvider>
+            <UsersContextProvider>
+                          <App />
+                    </UsersContextProvider>
+          </AlertContextProvider>
+        </RestaurantsContextProvider>
+      </Provider>
     </ThemeProvider>
   </MuiPickersUtilsProvider>,
 

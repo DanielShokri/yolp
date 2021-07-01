@@ -9,17 +9,18 @@ import {
 } from "@material-ui/core";
 import { SearchOutlined } from "@material-ui/icons";
 import useForm from "./../utils/useForm";
-import { RestaurantsContext } from "./../context/RestaruantsContext";
 import { routes } from "./../utils/routes";
 import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
+import { setSearchQuery } from "../features/restaurants/restaurantsSlice";
 
 const Search = () => {
-  const { setQuery } = useContext(RestaurantsContext);
+  const dispatch = useDispatch();
   const history = useHistory();
 
   const handleSearch = () => {
     if (Object.keys(inputs).length !== 0) {
-      setQuery(inputs);
+      dispatch(setSearchQuery(inputs));
       history.push(routes.searchResults);
     }
   };
@@ -50,7 +51,7 @@ const Search = () => {
           variant="filled"
         />
         <FormHelperText style={{ color: "white" }} id="my-helper-text">
-          Search for good restaurants in your area.
+          Search for good restaurants.
         </FormHelperText>
       </FormControl>
     </form>

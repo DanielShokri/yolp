@@ -11,7 +11,11 @@ function AlertError(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const AlertSuccsess = ({ children }) => {
+function AlertInfos(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+export const AlertSuccess = ({ children }) => {
   const { open, setOpen } = useContext(AlertContext);
 
   useEffect(() => {
@@ -51,6 +55,28 @@ export const AlertFail = ({ children }) => {
       <AlertError onClose={() => setOpenError(false)} severity="error">
         {children ? children : "Something went wrong!"}
       </AlertError>
+    </Snackbar>
+  );
+};
+
+export const AlertInfo = ({ children }) => {
+  const { openInfo, setOpenInfo } = useContext(AlertContext);
+
+  useEffect(() => {
+    return () => {
+      setOpenInfo(false);
+    };
+  }, [setOpenInfo]);
+
+  return (
+    <Snackbar
+      open={openInfo}
+      autoHideDuration={6000}
+      onClose={() => setOpenInfo(false)}
+    >
+      <AlertInfos onClose={() => setOpenInfo(false)} severity="info">
+        {children}
+      </AlertInfos>
     </Snackbar>
   );
 };

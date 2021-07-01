@@ -80,8 +80,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
-  const { isAuthenticated } = useContext(usersContext);
-  const [user, setUser] = useLocalStorage("user");
+  const { isAuthenticated, user } = useContext(usersContext);
   const history = useHistory();
 
   const classes = useStyles();
@@ -116,13 +115,13 @@ const Header = () => {
         </IconButton>
         <p>Notifications</p>
       </MenuItem> */}
-      {isAuthenticated ? (
+      {isAuthenticated && user && Object.keys(user).length ? (
         <MenuItem
           onClick={() => {
             history.push(buildPath(routes.userProfile, { id: user?.id }));
           }}
         >
-          Hi, {user.name[0].toUpperCase() + user.name.substring(1)}
+          Hi, {user?.name[0].toUpperCase() + user?.name.substring(1)}
         </MenuItem>
       ) : (
         <MenuItem>
@@ -169,13 +168,13 @@ const Header = () => {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {isAuthenticated ? (
+            {isAuthenticated && user && Object.keys(user).length ? (
               <Button
                 onClick={() => {
-                  history.push(buildPath(routes.userProfile, { id: user.id }));
+                  history.push(buildPath(routes.userProfile, { id: user?.id }));
                 }}
               >
-                Hi, {user.name[0].toUpperCase() + user.name.substring(1)}
+                Hi, {user?.name[0].toUpperCase() + user?.name.substring(1)}
               </Button>
             ) : (
               <Button>
