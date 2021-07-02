@@ -13,9 +13,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { routes } from "./../utils/routes";
 import useForm from "./../utils/useForm";
-import authApi from "../api/authApi";
-import { useState, useContext } from "react";
-import { usersContext } from "./../context/userContext";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { userLogin } from "./../features/users/usersSlice";
 
 function Copyright() {
   return (
@@ -65,15 +65,12 @@ function LoginPage(props) {
   const { history } = props;
   const classes = useStyles();
   const [isFormError, setIsFormError] = useState(false);
+  const dispatch = useDispatch();
 
-  const { setUser, setIsAuthenticated } = useContext(usersContext);
-
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setIsFormError(false);
     try {
-      const res = await authApi.post("/login", inputs);
-      setUser(res.data);
-      setIsAuthenticated(true);
+      dispatch(userLogin(inputs));
       history.push(routes.homePage);
     } catch (error) {
       setIsFormError(true);
@@ -144,7 +141,12 @@ function LoginPage(props) {
               </Grid> */}
               <Grid item>
                 <Link to={routes.register} variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  Don't have an account?{" "}
+                  <span
+                    style={{ textDecoration: "underline", fontWeight: 600 }}
+                  >
+                    Sign Up
+                  </span>
                 </Link>
               </Grid>
             </Grid>

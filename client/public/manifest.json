@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "YOLP",
+  "name": "Easy way to search for restaurants in your area.",
   "icons": [
     {
       "src": "favicon.ico",

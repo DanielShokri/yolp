@@ -1,15 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { UsersContextProvider } from "./context/userContext";
 import { RestaurantsContextProvider } from "./context/RestaruantsContext";
 import { AlertContextProvider } from "./context/AlertContext";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistStore } from "redux-persist";
 import "./index.css";
 
 const theme = createMuiTheme();
@@ -23,18 +23,20 @@ theme.typography.h3 = {
   },
 };
 
+let persistor = persistStore(store);
+
 ReactDOM.render(
   // <React.StrictMode>
   <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <RestaurantsContextProvider>
-          <AlertContextProvider>
-            <UsersContextProvider>
-                          <App />
-                    </UsersContextProvider>
-          </AlertContextProvider>
-        </RestaurantsContextProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <RestaurantsContextProvider>
+            <AlertContextProvider>
+              <App />
+            </AlertContextProvider>
+          </RestaurantsContextProvider>
+        </PersistGate>
       </Provider>
     </ThemeProvider>
   </MuiPickersUtilsProvider>,
@@ -42,8 +44,3 @@ ReactDOM.render(
   // </React.StrictMode>,
   document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

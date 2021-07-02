@@ -12,7 +12,6 @@ import { routes, buildPath } from "./../utils/routes";
 import { useHistory } from "react-router";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-import { usersContext } from "./../context/userContext";
 import { AlertContext } from "./../context/AlertContext";
 import { AlertFail } from "../components/Alert";
 import usersApi from "../api/usersApi";
@@ -26,7 +25,7 @@ const RestaurantDetails = (props) => {
   let history = useHistory();
   const { match } = props;
   const restaurantId = match.params.id;
-  const { isAuthenticated, user } = useContext(usersContext);
+  const { user, isAuthenticated } = useSelector((state) => state.users);
   const { setOpenError, setOpen } = useContext(AlertContext);
 
   // Request the selected restaurant details
@@ -46,6 +45,9 @@ const RestaurantDetails = (props) => {
       setRestaurantReviews(data.data.reviews);
     }
   }, [isSuccess, restaurant, isEditMode]);
+  // const { isFetching, isSuccess } = useFetchUserQuery(user.id);
+
+  useEffect(() => {}, []);
 
   const handleSaveOrDeleteFavorite = async (isDelete) => {
     try {
@@ -166,7 +168,7 @@ const RestaurantDetails = (props) => {
                       color="default"
                       size="large"
                       startIcon={<BookmarkBorderIcon fontSize="large" />}
-                      onClick={handleSaveOrDeleteFavorite}
+                      onClick={() => handleSaveOrDeleteFavorite(true)}
                     >
                       remove from favorites
                     </Button>
@@ -177,7 +179,7 @@ const RestaurantDetails = (props) => {
                       color="default"
                       size="large"
                       startIcon={<BookmarkBorderIcon fontSize="large" />}
-                      onClick={handleSaveOrDeleteFavorite}
+                      onClick={() => handleSaveOrDeleteFavorite(false)}
                     >
                       add to favorites
                     </Button>

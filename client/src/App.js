@@ -1,6 +1,7 @@
 import { useEffect, useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import authApi from "./api/authApi";
+import { useSelector, useDispatch } from "react-redux";
 // Screens
 import AddRestaurants from "./screens/AddRestaurants";
 import Header from "./components/Header";
@@ -15,14 +16,14 @@ import { Grid } from "@material-ui/core";
 import { routes } from "./utils/routes";
 import LoginPage from "./screens/Login";
 // Context
-import { usersContext } from "./context/userContext";
 import { AlertContext } from "./context/AlertContext";
 import { AlertInfo } from "./components/Alert";
+import { setIsAuthenticated, userLogout } from "./features/users/usersSlice";
 
 function App(props) {
-  const { setIsAuthenticated, isAuthenticated, user, setUser } =
-    useContext(usersContext);
+  const { user, isAuthenticated } = useSelector((state) => state.users);
   const { setOpenInfo } = useContext(AlertContext);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function checkIfAuth() {
@@ -30,10 +31,10 @@ function App(props) {
         const res = await authApi.get("/is-verify", {
           headers: { Authorization: user?.token },
         });
-        setIsAuthenticated(res.data);
+        dispatch(setIsAuthenticated(res.data));
       } catch (error) {
         setOpenInfo(true);
-        setUser({});
+        dispatch(userLogout());
       }
     }
     checkIfAuth();

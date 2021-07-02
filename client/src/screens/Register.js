@@ -2,8 +2,6 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -13,10 +11,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { routes } from "./../utils/routes";
 import useForm from "./../utils/useForm";
-import authApi from "../api/authApi";
-import { useState, useContext } from "react";
-import { usersContext } from "./../context/userContext";
-import useLocalStorage from "./../utils/useLocalStorage";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { userRegister } from "../features/users/usersSlice";
 
 function Copyright() {
   return (
@@ -67,17 +64,12 @@ function RegisterPage(props) {
   const classes = useStyles();
   const [isFormError, setIsFormError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [LoggedUser, setLoggedUser] = useLocalStorage("user");
+  const dispatch = useDispatch();
 
-  const { setUser, setIsAuthenticated } = useContext(usersContext);
-
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     setIsFormError(false);
     try {
-      const res = await authApi.post("/register", inputs);
-      setUser(res.data);
-      setLoggedUser(res.data);
-      setIsAuthenticated(true);
+      dispatch(userRegister(inputs));
       history.push(routes.homePage);
     } catch ({ response }) {
       setIsFormError(true);
@@ -85,7 +77,7 @@ function RegisterPage(props) {
     }
   };
 
-  const { inputs, handleInputChange, handleSubmit } = useForm(handleLogin);
+  const { inputs, handleInputChange, handleSubmit } = useForm(handleRegister);
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -156,7 +148,12 @@ function RegisterPage(props) {
               </Grid> */}
               <Grid item>
                 <Link to={routes.login} variant="body2">
-                  {"Already have an account? Sign in"}
+                  Already have an account?{" "}
+                  <span
+                    style={{ textDecoration: "underline", fontWeight: 600 }}
+                  >
+                    Sign In
+                  </span>
                 </Link>
               </Grid>
             </Grid>

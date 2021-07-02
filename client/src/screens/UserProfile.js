@@ -1,14 +1,13 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Button } from "@material-ui/core";
-import useLocalStorage from "./../utils/useLocalStorage";
-import { usersContext } from "./../context/userContext";
 import { routes } from "./../utils/routes";
+import { useSelector, useDispatch } from "react-redux";
+import { userLogout } from "../features/users/usersSlice";
 
 const UserProfile = (props) => {
   const { history, match } = props;
-
-  const { setIsAuthenticated, isAuthenticated, user, setUser } =
-    useContext(usersContext);
+  const dispatch = useDispatch();
+  const { user, isAuthenticated } = useSelector((state) => state.users);
 
   useEffect(() => {
     if (isAuthenticated && match.params?.id === user?.id) {
@@ -19,8 +18,7 @@ const UserProfile = (props) => {
   }, []);
 
   const handleLogout = () => {
-    setUser({});
-    setIsAuthenticated(false);
+    dispatch(userLogout());
     history.push(routes.homePage);
   };
 
