@@ -37,6 +37,18 @@ export const handleEditRestaurant = createAsyncThunk(
   }
 );
 
+export const handleDeleteRestaurant = createAsyncThunk(
+  "restaurants/delete",
+  async ({ restToDeleteId }) => {
+    try {
+      await restaurantsApi.delete(`/${restToDeleteId}`);
+      return restToDeleteId;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const initialState = {
   restaurants: [],
   restaurant: {},
@@ -63,6 +75,11 @@ const restaurantsSlice = createSlice({
     },
     [handleAddRestaurant.fulfilled]: (state, { payload }) => {
       state.restaurant = payload;
+    },
+    [handleDeleteRestaurant.fulfilled]: (state, { payload }) => {
+      state.restaurants = state.restaurants.filter((restaurant) => {
+        return restaurant.id !== payload;
+      });
     },
   },
 });

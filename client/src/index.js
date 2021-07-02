@@ -4,7 +4,6 @@ import App from "./App";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { RestaurantsContextProvider } from "./context/RestaruantsContext";
 import { AlertContextProvider } from "./context/AlertContext";
 import { Provider } from "react-redux";
 import store from "./store/store";
@@ -31,11 +30,9 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <RestaurantsContextProvider>
-            <AlertContextProvider>
-              <App />
-            </AlertContextProvider>
-          </RestaurantsContextProvider>
+          <AlertContextProvider>
+            <App />
+          </AlertContextProvider>
         </PersistGate>
       </Provider>
     </ThemeProvider>

@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import restaurantsReducer from "../features/restaurants/restaurantsSlice";
-import { getDefaultMiddleware } from "@reduxjs/toolkit";
+// import { getDefaultMiddleware } from "@reduxjs/toolkit";
 import usersReducer from "../features/users/usersSlice";
 import { restaurantsApiSlice } from "../features/api/restaurantsApiSlice";
 import { authApiSlice } from "../features/api/authApiSlice";
@@ -28,17 +28,11 @@ export default configureStore({
     [restaurantsApiSlice.reducerPath]: restaurantsApiSlice.reducer,
     [authApiSlice.reducerPath]: authApiSlice.reducer,
   },
-  middleware: getDefaultMiddleware({
-    restaurantsApiSlice: restaurantsApiSlice.middleware,
-    authApiSlice: authApiSlice.middleware,
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-  }),
-  // middleware: (getDefaultMiddleware) => {
-  //   return getDefaultMiddleware().concat(
-  //     restaurantsApiSlice.middleware,
-  //     authApiSlice.middleware
-  //   );
-  // },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(restaurantsApiSlice.middleware, authApiSlice.middleware);
+  },
 });
