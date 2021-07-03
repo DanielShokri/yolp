@@ -7,7 +7,8 @@ export const routes = {
   userProfile: "/profile/:id",
   restaurantDetails: "/restaurant/:id",
   addRestaurant: "/restaurants/add",
-  addReview: "/restaruant/:id/review",
+  editRestaurant: "/restaurant/edit/:id",
+  addReview: "/restaurant/:id/review",
   searchResults: "/restaurants/searchresults",
 };
 

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,9 +12,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { routes } from "./../utils/routes";
 import useForm from "./../utils/useForm";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { userRegister } from "../features/users/usersSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUserError, userRegister } from "../features/users/usersSlice";
 
 function Copyright() {
   return (
@@ -60,21 +60,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function RegisterPage(props) {
-  const { history } = props;
+  const { error } = useSelector((state) => state.users);
   const classes = useStyles();
   const [isFormError, setIsFormError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    return () => {
+      dispatch(clearUserError());
+    };
+  }, []);
+
   const handleRegister = async () => {
-    setIsFormError(false);
-    try {
-      dispatch(userRegister(inputs));
-      history.push(routes.homePage);
-    } catch ({ response }) {
-      setIsFormError(true);
-      setErrorMsg(response.data);
-    }
+    dispatch(userRegister(inputs));
   };
 
   const { inputs, handleInputChange, handleSubmit } = useForm(handleRegister);
@@ -102,7 +101,7 @@ function RegisterPage(props) {
               name="name"
               onChange={handleInputChange}
               autoFocus
-              error={isFormError}
+              error={!!error}
             />
             <TextField
               variant="outlined"
@@ -114,7 +113,7 @@ function RegisterPage(props) {
               name="email"
               onChange={handleInputChange}
               autoComplete="email"
-              error={isFormError}
+              error={!!error}
             />
             <TextField
               variant="outlined"
@@ -127,8 +126,8 @@ function RegisterPage(props) {
               type="password"
               id="password"
               autoComplete="current-password"
-              helperText={isFormError ? errorMsg : ""}
-              error={isFormError}
+              helperText={error}
+              error={!!error}
             />
 
             <Button

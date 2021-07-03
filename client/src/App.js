@@ -11,6 +11,8 @@ import AddRating from "./screens/AddRating";
 import SearchResults from "./screens/SearchResults";
 import RegisterPage from "./screens/Register";
 import UserProfile from "./screens/UserProfile";
+import EditRestaurant from "./screens/EditRestaurant";
+
 // Materiel ui
 import { Grid } from "@material-ui/core";
 import { routes } from "./utils/routes";
@@ -49,6 +51,7 @@ function App(props) {
           <Switch>
             <Route exact path={routes.homePage} component={HomePage} />
             <Route path={routes.addRestaurant} component={AddRestaurants} />
+            <Route path={routes.editRestaurant} component={EditRestaurant} />
             <Route
               path={routes.restaurantDetails}
               component={RestaurantDetails}

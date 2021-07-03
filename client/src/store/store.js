@@ -18,6 +18,7 @@ import storage from "redux-persist/lib/storage";
 const persistConfig = {
   key: "users",
   storage,
+  blacklist: ["error"],
 };
 const persistedReducer = persistReducer(persistConfig, usersReducer);
 

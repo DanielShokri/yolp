@@ -29,8 +29,11 @@ export const handleEditRestaurant = createAsyncThunk(
   "restaurants/edit",
   async ({ inputsWithImage, restaurantId }) => {
     try {
-      await restaurantsApi.put(`/${restaurantId}`, inputsWithImage);
-      // if (res.status === 200) setOpen(true);
+      const { data } = await restaurantsApi.put(
+        `/${restaurantId}`,
+        inputsWithImage
+      );
+      return data.data.restaurants[0];
     } catch (error) {
       console.log(error);
     }
@@ -74,6 +77,9 @@ const restaurantsSlice = createSlice({
       state.restaurants = payload;
     },
     [handleAddRestaurant.fulfilled]: (state, { payload }) => {
+      state.restaurant = payload;
+    },
+    [handleEditRestaurant.fulfilled]: (state, { payload }) => {
       state.restaurant = payload;
     },
     [handleDeleteRestaurant.fulfilled]: (state, { payload }) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { Typography, Grid, Button, Divider, Chip } from "@material-ui/core";
 import HeroSection from "../components/HeroSection";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
@@ -20,18 +20,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRestaurant } from "../features/restaurants/restaurantsSlice";
 import { useFetchRestaurantQuery } from "../features/api/restaurantsApiSlice";
 import "../styles/RestaurantDetails.css";
+import { handleSaveToFavorite } from "../features/users/usersSlice";
 
 const RestaurantDetails = (props) => {
   let history = useHistory();
   const { match } = props;
   const restaurantId = match.params.id;
-  const { user, isAuthenticated } = useSelector((state) => state.users);
   const { setOpenError, setOpen } = useContext(AlertContext);
 
   // Request the selected restaurant details
   const dispatch = useDispatch();
   const { restaurant } = useSelector((state) => state.restaurants);
-  const { data, isSuccess, refetch } = useFetchRestaurantQuery(restaurantId);
+  const { user, isAuthenticated } = useSelector((state) => state.users);
+  const { data, isFetching } = useFetchRestaurantQuery(restaurantId, {
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
   // States
   const [restaurantReviews, setRestaurantReviews] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
@@ -40,23 +46,23 @@ const RestaurantDetails = (props) => {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    if (isSuccess) {
+    if (!isFetching) {
       dispatch(setRestaurant(data.data.restaurant[0]));
       setRestaurantReviews(data.data.reviews);
     }
-  }, [isSuccess, restaurant, isEditMode]);
-  // const { isFetching, isSuccess } = useFetchUserQuery(user.id);
-
-  useEffect(() => {}, []);
+  }, [isFetching]);
 
   const handleSaveOrDeleteFavorite = async (isDelete) => {
     try {
       if (isAuthenticated && user.id) {
         if (!isDelete) {
-          await usersApi.post("/add-favorite", {
-            restaurant,
-            user_id: user.id,
-          });
+          const restaurantToAdd = {
+            name: restaurant.name,
+            location: restaurant.location,
+            restaurant_id: restaurant.id,
+            restaurant_image: restaurant.restaurant_image,
+          };
+          dispatch(handleSaveToFavorite({ restaurantToAdd, user_id: user.id }));
         } else {
           await usersApi.delete("/remove-favorite", {
             restaurant_id: restaurantId,
@@ -96,6 +102,37 @@ const RestaurantDetails = (props) => {
       }
     }
   }, [restaurant]);
+
+  const renderFavoriteButton = useMemo(() => {
+    return (
+      // Object.keys(user).length !== 0 &&
+      // user.favorites &&
+      Object.keys(user).length !== 0 &&
+        user.favorites.some((fav) => fav.restaurant_id === restaurantId) ? (
+        <Button
+          className="button-spacing"
+          variant="outlined"
+          color="default"
+          size="large"
+          startIcon={<BookmarkBorderIcon fontSize="large" />}
+          onClick={() => handleSaveOrDeleteFavorite(true)}
+        >
+          remove from favorites
+        </Button>
+      ) : (
+        <Button
+          className="button-spacing"
+          variant="outlined"
+          color="default"
+          size="large"
+          startIcon={<BookmarkBorderIcon fontSize="large" />}
+          onClick={() => handleSaveOrDeleteFavorite(false)}
+        >
+          add to favorites
+        </Button>
+      )
+    );
+  }, [user, restaurantId]);
 
   return (
     <>
@@ -158,52 +195,20 @@ const RestaurantDetails = (props) => {
                 >
                   Write a Review
                 </Button>
-                {Object.keys(user).length !== 0 ? (
-                  user?.favorites.some(
-                    (fav) => fav.restaurant_id === restaurantId
-                  ) ? (
-                    <Button
-                      className="button-spacing"
-                      variant="outlined"
-                      color="default"
-                      size="large"
-                      startIcon={<BookmarkBorderIcon fontSize="large" />}
-                      onClick={() => handleSaveOrDeleteFavorite(true)}
-                    >
-                      remove from favorites
-                    </Button>
-                  ) : (
-                    <Button
-                      className="button-spacing"
-                      variant="outlined"
-                      color="default"
-                      size="large"
-                      startIcon={<BookmarkBorderIcon fontSize="large" />}
-                      onClick={() => handleSaveOrDeleteFavorite(false)}
-                    >
-                      add to favorites
-                    </Button>
-                  )
-                ) : (
-                  <Button
-                    className="button-spacing"
-                    variant="outlined"
-                    color="default"
-                    size="large"
-                    startIcon={<BookmarkBorderIcon fontSize="large" />}
-                    onClick={handleSaveOrDeleteFavorite}
-                  >
-                    add to favorites
-                  </Button>
-                )}
-
+                {renderFavoriteButton}
                 <Button
                   className="button-spacing"
                   variant="outlined"
                   color="default"
                   size="large"
                   startIcon={<EditOutlinedIcon fontSize="large" />}
-                  onClick={() => setIsEditMode(!isEditMode)}
+                  onClick={() =>
+                    history.push(
+                      buildPath(routes.editRestaurant, {
+                        id: restaurantId,
+                      })
+                    )
+                  }
                 >
                   EDIT
                 </Button>
@@ -260,7 +265,6 @@ const RestaurantDetails = (props) => {
           restaurantEdit={restaurant}
           isEditMode={isEditMode}
           setIsEditMode={setIsEditMode}
-          refetch={refetch}
         />
       )}
     </>

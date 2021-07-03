@@ -60,6 +60,10 @@ router.post("/login", async (req, res) => {
     );
 
     if (user.rowCount === 0) {
+      console.log(
+        "🚀 ~ file: users.js ~ line 63 ~ router.post ~ user.rowCount",
+        user.rowCount
+      );
       return res.status(401).json("Password or email is incorrect");
     }
     // 3.check if incoming password is the same as DB password
@@ -80,7 +84,7 @@ router.post("/login", async (req, res) => {
     if (error.isJoi) {
       return res.status(422).json(error.details[0].message);
     } else {
-      return res.status(500).json("Server error");
+      return res.status(500).json(error);
     }
   }
 });
@@ -125,7 +129,7 @@ router.post("/add-favorite", auth, async (req, res) => {
 
     if (!isDuplicateFavorite(favoritesList, restaurant.id)) {
       await db.query(
-        `INSERT INTO favorites (name, location, restaurant_id, restaurant_image, user_id) VALUES ($1, $2, $3, $4, $5)`,
+        `INSERT INTO favorites (name, location, restaurant_id, restaurant_image, user_id) VALUES ($1, $2, $3, $4, $5) returning *`,
         [name, location, id, restaurant_image, user_id]
       );
       res.status(200).json("Added successfully to favorites!");
