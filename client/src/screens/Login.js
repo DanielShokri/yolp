@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,9 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { routes } from "./../utils/routes";
 import useForm from "./../utils/useForm";
-import authApi from "../api/authApi";
-import { useState, useContext } from "react";
-import { usersContext } from "./../context/userContext";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUserError, userLogin } from "./../features/users/usersSlice";
 
 function Copyright() {
   return (
@@ -61,24 +61,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LoginPage(props) {
-  const { history } = props;
+function LoginPage() {
+  const { error } = useSelector((state) => state.users);
   const classes = useStyles();
-  const [isFormError, setIsFormError] = useState(false);
+  const dispatch = useDispatch();
 
-  const { setUser, setIsAuthenticated } = useContext(usersContext);
+  useEffect(() => {
+    return () => {
+      dispatch(clearUserError());
+    };
+  }, []);
 
-  const handleLogin = async () => {
-    setIsFormError(false);
-    try {
-      const res = await authApi.post("/login", inputs);
-      setUser(res.data);
-      setIsAuthenticated(true);
-      history.push(routes.homePage);
-    } catch (error) {
-      setIsFormError(true);
-      console.log(error);
-    }
+  const handleLogin = () => {
+    dispatch(userLogin(inputs));
   };
 
   const { inputs, handleInputChange, handleSubmit } = useForm(handleLogin);
@@ -107,7 +102,7 @@ function LoginPage(props) {
               onChange={handleInputChange}
               autoComplete="email"
               autoFocus
-              error={isFormError}
+              error={!!error}
             />
             <TextField
               variant="outlined"
@@ -120,8 +115,8 @@ function LoginPage(props) {
               type="password"
               id="password"
               autoComplete="current-password"
-              helperText={isFormError ? "Password or email is incorrect" : ""}
-              error={isFormError}
+              helperText={error}
+              error={!!error}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -144,7 +139,12 @@ function LoginPage(props) {
               </Grid> */}
               <Grid item>
                 <Link to={routes.register} variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  Don't have an account?{" "}
+                  <span
+                    style={{ textDecoration: "underline", fontWeight: 600 }}
+                  >
+                    Sign Up
+                  </span>
                 </Link>
               </Grid>
             </Grid>

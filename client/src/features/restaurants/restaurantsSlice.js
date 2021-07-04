@@ -29,8 +29,23 @@ export const handleEditRestaurant = createAsyncThunk(
   "restaurants/edit",
   async ({ inputsWithImage, restaurantId }) => {
     try {
-      await restaurantsApi.put(`/${restaurantId}`, inputsWithImage);
-      // if (res.status === 200) setOpen(true);
+      const { data } = await restaurantsApi.put(
+        `/${restaurantId}`,
+        inputsWithImage
+      );
+      return data.data.restaurants[0];
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const handleDeleteRestaurant = createAsyncThunk(
+  "restaurants/delete",
+  async ({ restToDeleteId }) => {
+    try {
+      await restaurantsApi.delete(`/${restToDeleteId}`);
+      return restToDeleteId;
     } catch (error) {
       console.log(error);
     }
@@ -63,6 +78,14 @@ const restaurantsSlice = createSlice({
     },
     [handleAddRestaurant.fulfilled]: (state, { payload }) => {
       state.restaurant = payload;
+    },
+    [handleEditRestaurant.fulfilled]: (state, { payload }) => {
+      state.restaurant = payload;
+    },
+    [handleDeleteRestaurant.fulfilled]: (state, { payload }) => {
+      state.restaurants = state.restaurants.filter((restaurant) => {
+        return restaurant.id !== payload;
+      });
     },
   },
 });

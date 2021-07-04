@@ -1,30 +1,25 @@
 import Card from "./Card";
-import restaruantApi from "../api/restaurantsApi";
 import { Typography, Grid, Button } from "@material-ui/core";
 import { useState, useContext } from "react";
 import { AlertSuccess, AlertFail } from "./Alert";
 import { AlertContext } from "./../context/AlertContext";
-import { RestaurantsContext } from "./../context/RestaruantsContext";
+import { useSelector, useDispatch } from "react-redux";
+import { handleDeleteRestaurant } from "./../features/restaurants/restaurantsSlice";
 
 const RestaurantsList = ({ restaurantsList, isSearchList }) => {
   const [showMoreCount, setShowMoreCount] = useState(6);
+  // const { restaurants } = useSelector((state) => state.restaurants);
   const [restaurantToDelete, setRestaurantToDelete] = useState({});
   const { setOpen, setOpenError } = useContext(AlertContext);
-  const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+  const dispatch = useDispatch();
 
   const handleDelete = async (restToDelete) => {
     setRestaurantToDelete(restToDelete);
 
     try {
-      await restaruantApi
-        .delete(`/${restToDelete.id}`)
+      dispatch(handleDeleteRestaurant({ restToDeleteId: restToDelete.id }))
         .then(() => {
           setOpen(true);
-          return setRestaurants(
-            restaurants.filter((restaruant) => {
-              return restaruant.id !== restToDelete.id;
-            })
-          );
         })
         .catch(() => {
           setOpenError(true);

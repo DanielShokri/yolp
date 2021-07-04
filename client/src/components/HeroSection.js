@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import { RestaurantsContext } from "./../context/RestaruantsContext";
+import { useSelector } from "react-redux";
 import "../styles/HeroSection.css";
 
 const HeroSection = ({ children, height }) => {
-  const { restaurant } = useContext(RestaurantsContext);
+  const { restaurant } = useSelector((state) => state.restaurants);
 
   return (
     <div

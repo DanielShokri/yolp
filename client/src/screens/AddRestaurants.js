@@ -32,12 +32,8 @@ import {
 import { useFetchRestaurantsQuery } from "../features/api/restaurantsApiSlice";
 import { setRestaurants } from "../features/restaurants/restaurantsSlice";
 
-const AddRestaurants = ({
-  restaurantEdit,
-  isEditMode,
-  setIsEditMode,
-  refetch,
-}) => {
+const AddRestaurants = (props) => {
+  const { restaurantEdit, isEditMode } = props;
   const classes = useStylesForm();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -47,7 +43,7 @@ const AddRestaurants = ({
   const [openingTime, setOpeningTime] = useState(restaurantEdit?.opening_time);
   const [closingTime, setClosingTime] = useState(restaurantEdit?.closing_time);
   const { restaurant } = useSelector((state) => state.restaurants);
-  const { data, isFetching, isSuccess } = useFetchRestaurantsQuery();
+  const { data, isSuccess } = useFetchRestaurantsQuery();
   let redirectTimeout;
 
   useEffect(() => {
@@ -109,22 +105,17 @@ const AddRestaurants = ({
           })
         ).then(() => {
           setOpen(true);
+          redirectTimeout = setTimeout(() => {
+            history.push(
+              buildPath(routes.restaurantDetails, {
+                id: restaurantEdit.id,
+              })
+            );
+          }, 2000);
         });
-
-        setTimeout(() => {
-          setIsEditMode(!isEditMode);
-        }, 2000);
       } catch (error) {
         console.log(error);
       }
-    }
-    if (isEditMode) {
-      redirectTimeout = setTimeout(() => {
-        history.push(
-          buildPath(routes.restaurantDetails, { id: restaurantEdit.id })
-        );
-        refetch();
-      }, 3000);
     }
   };
 
@@ -188,7 +179,7 @@ const AddRestaurants = ({
                   required
                   fullWidth
                   id="lastName"
-                  value={inputs?.rating || 1}
+                  value={inputs?.price_range || 1}
                   select
                   label="Price (1-5)"
                   name="price_range"
@@ -280,7 +271,13 @@ const AddRestaurants = ({
                     variant="contained"
                     color="secondary"
                     className={classes.submit}
-                    onClick={() => setIsEditMode(!isEditMode)}
+                    onClick={() => {
+                      history.push(
+                        buildPath(routes.restaurantDetails, {
+                          id: restaurantEdit.id,
+                        })
+                      );
+                    }}
                   >
                     back
                   </Button>

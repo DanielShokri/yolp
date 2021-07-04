@@ -1,6 +1,7 @@
 import { useEffect, useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import authApi from "./api/authApi";
+import { useSelector, useDispatch } from "react-redux";
 // Screens
 import AddRestaurants from "./screens/AddRestaurants";
 import Header from "./components/Header";
@@ -10,19 +11,21 @@ import AddRating from "./screens/AddRating";
 import SearchResults from "./screens/SearchResults";
 import RegisterPage from "./screens/Register";
 import UserProfile from "./screens/UserProfile";
+import EditRestaurant from "./screens/EditRestaurant";
+
 // Materiel ui
 import { Grid } from "@material-ui/core";
 import { routes } from "./utils/routes";
 import LoginPage from "./screens/Login";
 // Context
-import { usersContext } from "./context/userContext";
 import { AlertContext } from "./context/AlertContext";
 import { AlertInfo } from "./components/Alert";
+import { setIsAuthenticated, userLogout } from "./features/users/usersSlice";
 
 function App(props) {
-  const { setIsAuthenticated, isAuthenticated, user, setUser } =
-    useContext(usersContext);
+  const { user, isAuthenticated } = useSelector((state) => state.users);
   const { setOpenInfo } = useContext(AlertContext);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function checkIfAuth() {
@@ -30,10 +33,10 @@ function App(props) {
         const res = await authApi.get("/is-verify", {
           headers: { Authorization: user?.token },
         });
-        setIsAuthenticated(res.data);
+        dispatch(setIsAuthenticated(res.data));
       } catch (error) {
         setOpenInfo(true);
-        setUser({});
+        dispatch(userLogout());
       }
     }
     checkIfAuth();
@@ -48,11 +51,12 @@ function App(props) {
           <Switch>
             <Route exact path={routes.homePage} component={HomePage} />
             <Route path={routes.addRestaurant} component={AddRestaurants} />
+            <Route path={routes.editRestaurant} component={EditRestaurant} />
+            <Route path={routes.addReview} component={AddRating} />
             <Route
               path={routes.restaurantDetails}
               component={RestaurantDetails}
             />
-            <Route path={routes.addReview} component={AddRating} />
             <Route path={routes.searchResults} component={SearchResults} />
             <Route
               path={routes.login}

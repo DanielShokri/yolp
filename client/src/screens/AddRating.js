@@ -18,27 +18,24 @@ import useForm from "./../utils/useForm";
 import restaurantsApi from "../api/restaurantsApi";
 import { useStylesForm } from "./../utils/constants";
 import { routes, buildPath } from "./../utils/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { useFetchRestaurantQuery } from "../features/api/restaurantsApiSlice";
+import { setRestaurant } from "../features/restaurants/restaurantsSlice";
 
 const AddRating = (props) => {
   const { match, history } = props;
   const restaurantId = match.params.id;
+  const { restaurant } = useSelector((state) => state.restaurants);
   const classes = useStylesForm();
+  const dispatch = useDispatch();
   const { setOpen, setOpenError } = useContext(AlertContext);
-  const [restaurant, setRestaurant] = useState({});
+  const { data, isFetching } = useFetchRestaurantQuery(restaurantId);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const { data } = await restaurantsApi.get(`/${restaurantId}`);
-        setRestaurant(data.data.restaurant[0]);
-      } catch (error) {
-        setOpenError(true);
-        console.log(error);
-      }
+    if (!isFetching) {
+      dispatch(setRestaurant(data.data.restaurant[0]));
     }
-
-    fetchData();
-  }, [restaurantId, setOpenError]);
+  }, [isFetching]);
 
   const handleReviewPost = async () => {
     try {
@@ -55,7 +52,12 @@ const AddRating = (props) => {
   };
 
   const { inputs, handleInputChange, handleSubmit } = useForm(handleReviewPost);
-
+  if (isFetching)
+    return (
+      <div style={{ position: "relative" }}>
+        <div className="spinner"></div>
+      </div>
+    );
   return (
     <>
       <AlertSuccess>The review was posted successfully </AlertSuccess>

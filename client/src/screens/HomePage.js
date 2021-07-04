@@ -10,12 +10,13 @@ import { useFetchRestaurantsQuery } from "../features/api/restaurantsApiSlice";
 const HomePage = () => {
   const dispatch = useDispatch();
   const { restaurants } = useSelector((state) => state.restaurants);
-  const { data, isFetching, isSuccess } = useFetchRestaurantsQuery();
+  const { data, isFetching, isSuccess, refetch } = useFetchRestaurantsQuery();
 
   useEffect(() => {
     if (isSuccess) {
       dispatch(setRestaurants(data.data.restaurants));
     }
+    refetch();
   }, [data, isSuccess]);
 
   return (

@@ -5,25 +5,19 @@ const baseURL =
     ? "/auth"
     : "http://localhost:3001/auth";
 
-export const restaurantsApiSlice = createApi({
-  reducerPath: "api",
+export const authApiSlice = createApi({
+  reducerPath: "auth",
   tagTypes: ["auth"],
   baseQuery: fetchBaseQuery({ baseUrl: baseURL }),
   endpoints(builder) {
     return {
-      fetchRestaurant: builder.query({
+      fetchUser: builder.query({
         query(id) {
-          return `/${id}`;
-        },
-      }),
-      fetchRestaurants: builder.query({
-        query() {
-          return `/`;
+          return `/user/${id}`;
         },
       }),
     };
   },
 });
 
-export const { useFetchRestaurantQuery, useFetchRestaurantsQuery } =
-  restaurantsApiSlice;
+export const { useFetchUserQuery } = authApiSlice;

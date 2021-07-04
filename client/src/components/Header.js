@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -13,13 +13,12 @@ import {
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import MoreIcon from "@material-ui/icons/MoreVert";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import { usersContext } from "./../context/userContext";
+// import AccountCircle from "@material-ui/icons/AccountCircle";
+// import MailIcon from "@material-ui/icons/Mail";
+// import NotificationsIcon from "@material-ui/icons/Notifications";
 import { buildPath, routes } from "./../utils/routes";
-import useLocalStorage from "./../utils/useLocalStorage";
 import { useHistory } from "react-router";
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -80,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
-  const { isAuthenticated, user } = useContext(usersContext);
+  const { user, isAuthenticated } = useSelector((state) => state.users);
   const history = useHistory();
 
   const classes = useStyles();

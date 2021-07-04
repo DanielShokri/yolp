@@ -1,15 +1,15 @@
-import { useContext } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { IconButton, Typography, Badge } from "@material-ui/core";
 import { useHistory } from "react-router";
 import StarRating from "./StarRating";
 import { routes, buildPath } from "./../utils/routes";
-import { RestaurantsContext } from "./../context/RestaruantsContext";
+import { useDispatch } from "react-redux";
+import { setRestaurant } from "../features/restaurants/restaurantsSlice";
 import "../styles/Card.css";
 
 const Card = ({ restaurant, handleDelete }) => {
-  const { setRestaurant } = useContext(RestaurantsContext);
   let history = useHistory();
+  const dispatch = useDispatch();
 
   const deleteRestaurant = () => {
     const restToDelete = {
@@ -39,7 +39,7 @@ const Card = ({ restaurant, handleDelete }) => {
             <h3 className="card_content-title--linked">
               <div
                 onClick={() => {
-                  setRestaurant(restaurant);
+                  dispatch(setRestaurant(restaurant));
                   history.push(
                     buildPath(routes.restaurantDetails, { id: restaurant.id })
                   );

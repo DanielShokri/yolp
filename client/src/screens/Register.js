@@ -1,9 +1,8 @@
+import { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -13,10 +12,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { routes } from "./../utils/routes";
 import useForm from "./../utils/useForm";
-import authApi from "../api/authApi";
-import { useState, useContext } from "react";
-import { usersContext } from "./../context/userContext";
-import useLocalStorage from "./../utils/useLocalStorage";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUserError, userRegister } from "../features/users/usersSlice";
 
 function Copyright() {
   return (
@@ -63,29 +60,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function RegisterPage(props) {
-  const { history } = props;
+  const { error } = useSelector((state) => state.users);
   const classes = useStyles();
   const [isFormError, setIsFormError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [LoggedUser, setLoggedUser] = useLocalStorage("user");
+  const dispatch = useDispatch();
 
-  const { setUser, setIsAuthenticated } = useContext(usersContext);
+  useEffect(() => {
+    return () => {
+      dispatch(clearUserError());
+    };
+  }, []);
 
-  const handleLogin = async () => {
-    setIsFormError(false);
-    try {
-      const res = await authApi.post("/register", inputs);
-      setUser(res.data);
-      setLoggedUser(res.data);
-      setIsAuthenticated(true);
-      history.push(routes.homePage);
-    } catch ({ response }) {
-      setIsFormError(true);
-      setErrorMsg(response.data);
-    }
+  const handleRegister = async () => {
+    dispatch(userRegister(inputs));
   };
 
-  const { inputs, handleInputChange, handleSubmit } = useForm(handleLogin);
+  const { inputs, handleInputChange, handleSubmit } = useForm(handleRegister);
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -110,7 +101,7 @@ function RegisterPage(props) {
               name="name"
               onChange={handleInputChange}
               autoFocus
-              error={isFormError}
+              error={!!error}
             />
             <TextField
               variant="outlined"
@@ -122,7 +113,7 @@ function RegisterPage(props) {
               name="email"
               onChange={handleInputChange}
               autoComplete="email"
-              error={isFormError}
+              error={!!error}
             />
             <TextField
               variant="outlined"
@@ -135,8 +126,8 @@ function RegisterPage(props) {
               type="password"
               id="password"
               autoComplete="current-password"
-              helperText={isFormError ? errorMsg : ""}
-              error={isFormError}
+              helperText={error}
+              error={!!error}
             />
 
             <Button
@@ -156,7 +147,12 @@ function RegisterPage(props) {
               </Grid> */}
               <Grid item>
                 <Link to={routes.login} variant="body2">
-                  {"Already have an account? Sign in"}
+                  Already have an account?{" "}
+                  <span
+                    style={{ textDecoration: "underline", fontWeight: 600 }}
+                  >
+                    Sign In
+                  </span>
                 </Link>
               </Grid>
             </Grid>
