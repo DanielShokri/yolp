@@ -1,5 +1,13 @@
 import { makeStyles } from "@material-ui/core/styles";
 
+export const priceRangeText = {
+  1: "Very Cheap",
+  2: "Cheap",
+  3: "Moderate",
+  4: "Expensive",
+  5: "Very Expensive",
+};
+
 export const options = [
   {
     value: 1,

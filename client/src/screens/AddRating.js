@@ -23,7 +23,6 @@ import { useFetchRestaurantQuery } from "../features/api/restaurantsApiSlice";
 import { setRestaurant } from "../features/restaurants/restaurantsSlice";
 
 const AddRating = (props) => {
-  console.log("enter the review state");
   const { match, history } = props;
   const restaurantId = match.params.id;
   const { restaurant } = useSelector((state) => state.restaurants);
@@ -58,7 +57,7 @@ const AddRating = (props) => {
       <div style={{ position: "relative" }}>
         <div className="spinner"></div>
       </div>
-    ); 
+    );
   return (
     <>
       <AlertSuccess>The review was posted successfully </AlertSuccess>

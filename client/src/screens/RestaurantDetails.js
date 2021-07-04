@@ -4,6 +4,7 @@ import HeroSection from "../components/HeroSection";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import MenuCard from "../components/MenuCard";
 import StarRating from "../components/StarRating";
 import ReviewCard from "../components/ReviewCard";
@@ -17,9 +18,10 @@ import { AlertSuccess } from "./../components/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { setRestaurant } from "../features/restaurants/restaurantsSlice";
 import { useFetchRestaurantQuery } from "../features/api/restaurantsApiSlice";
-import "../styles/RestaurantDetails.css";
 import { handleSaveToFavorite } from "../features/users/usersSlice";
 import { handleRemoveFromFavorite } from "./../features/users/usersSlice";
+import "../styles/RestaurantDetails.css";
+import { priceRangeText } from "./../utils/constants";
 
 const RestaurantDetails = (props) => {
   let history = useHistory();
@@ -190,6 +192,10 @@ const RestaurantDetails = (props) => {
                 })}
             </span>
           </div>
+          <Chip
+            icon={<MonetizationOnIcon />}
+            label={priceRangeText[restaurant.price_range]}
+          />
         </HeroSection>
 
         <div className="biz-details-page-container">

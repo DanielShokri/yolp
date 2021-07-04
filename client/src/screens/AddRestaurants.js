@@ -179,7 +179,7 @@ const AddRestaurants = (props) => {
                   required
                   fullWidth
                   id="lastName"
-                  value={inputs?.rating || 1}
+                  value={inputs?.price_range || 1}
                   select
                   label="Price (1-5)"
                   name="price_range"
