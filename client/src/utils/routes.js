@@ -8,7 +8,7 @@ export const routes = {
   restaurantDetails: "/restaurant/:id",
   addRestaurant: "/restaurants/add",
   editRestaurant: "/restaurant/edit/:id",
-  addReview: "/restaurant/:id/review",
+  addReview: "/restaurant/review/:id",
   searchResults: "/restaurants/searchresults",
 };
 

@@ -52,11 +52,11 @@ function App(props) {
             <Route exact path={routes.homePage} component={HomePage} />
             <Route path={routes.addRestaurant} component={AddRestaurants} />
             <Route path={routes.editRestaurant} component={EditRestaurant} />
+            <Route path={routes.addReview} component={AddRating} />
             <Route
               path={routes.restaurantDetails}
               component={RestaurantDetails}
             />
-            <Route path={routes.addReview} component={AddRating} />
             <Route path={routes.searchResults} component={SearchResults} />
             <Route
               path={routes.login}

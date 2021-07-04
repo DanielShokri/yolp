@@ -48,7 +48,24 @@ export const handleSaveToFavorite = createAsyncThunk(
         restaurantToAdd,
         user_id,
       });
-      console.log("data", data);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const handleRemoveFromFavorite = createAsyncThunk(
+  "users/remove-favorite",
+  async ({ user_id, restaurant_id }) => {
+    try {
+      await usersApi.delete("/remove-favorite", {
+        data: {
+          restaurant_id,
+          user_id,
+        },
+      });
+      return restaurant_id;
     } catch (error) {
       console.log(error);
     }
@@ -97,8 +114,12 @@ const usersSlice = createSlice({
       state.isAuthenticated = false;
     },
     [handleSaveToFavorite.fulfilled]: (state, { payload }) => {
-      state.user.favorites = payload;
-      state.isAuthenticated = true;
+      state.user.favorites.push(payload);
+    },
+    [handleRemoveFromFavorite.fulfilled]: (state, { payload }) => {
+      state.user.favorites = state.user.favorites.filter(
+        (fav) => fav.restaurant_id !== payload
+      );
     },
   },
 });
