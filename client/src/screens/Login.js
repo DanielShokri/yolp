@@ -66,6 +66,7 @@ function LoginPage() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  console.log("🚀 ~ file: Login.js ~ line 70 ~ LoginPage ~ error", error);
   useEffect(() => {
     return () => {
       dispatch(clearUserError());
