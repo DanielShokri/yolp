@@ -121,7 +121,8 @@ const RestaurantDetails = (props) => {
 
   const renderFavoriteButton = useMemo(() => {
     return Object.keys(user).length !== 0 &&
-      Object.keys(user.favorites).length !== 0 &&
+      user.favorites &&
+      Object.keys(user?.favorites).length !== 0 &&
       user?.favorites.some((fav) => fav.restaurant_id === restaurantId) ? (
       <Button
         className="button-spacing"
@@ -154,45 +155,47 @@ const RestaurantDetails = (props) => {
 
       <>
         <HeroSection height="400">
-          <Typography
-            className="mtb-20"
-            variant="h1"
-            style={{ fontWeight: "700" }}
-          >
-            {restaurant.name}
-          </Typography>
-          {restaurant.average_rating && (
-            <>
-              <StarRating
-                review={restaurant.average_rating}
-                className="mtb-20"
-                disable={true}
-              />
-            </>
-          )}
+          <div className="restaurant-details-content">
+            <Typography
+              className="mtb-20"
+              variant="h1"
+              style={{ fontWeight: "700" }}
+            >
+              {restaurant.name}
+            </Typography>
+            {restaurant.average_rating && (
+              <>
+                <StarRating
+                  review={restaurant.average_rating}
+                  className="mtb-20"
+                  disable={true}
+                />
+              </>
+            )}
 
-          <div className="mtb-20 flex-basis">
+            <div className="mtb-20 flex-basis">
+              <Chip
+                size="medium"
+                color={isOpen ? "primary" : "secondary"}
+                label={isOpen ? "Open" : "Close"}
+              />
+              <span style={{ fontWeight: "700" }}>
+                {restaurant.opening_time &&
+                  format(new Date(restaurant.opening_time), "HH:mm", {
+                    locale: he,
+                  })}{" "}
+                -
+                {restaurant.opening_time &&
+                  format(new Date(restaurant.closing_time), "HH:mm", {
+                    locale: he,
+                  })}
+              </span>
+            </div>
             <Chip
-              size="medium"
-              color={isOpen ? "primary" : "secondary"}
-              label={isOpen ? "Open" : "Close"}
+              icon={<MonetizationOnIcon />}
+              label={priceRangeText[restaurant.price_range]}
             />
-            <span style={{ fontWeight: "700" }}>
-              {restaurant.opening_time &&
-                format(new Date(restaurant.opening_time), "HH:mm", {
-                  locale: he,
-                })}{" "}
-              -
-              {restaurant.opening_time &&
-                format(new Date(restaurant.closing_time), "HH:mm", {
-                  locale: he,
-                })}
-            </span>
           </div>
-          <Chip
-            icon={<MonetizationOnIcon />}
-            label={priceRangeText[restaurant.price_range]}
-          />
         </HeroSection>
 
         <div className="biz-details-page-container">

@@ -48,7 +48,6 @@ export const handleSaveToFavorite = createAsyncThunk(
         restaurantToAdd,
         user_id,
       });
-      console.log("🚀 ~ file: usersSlice.js ~ line 55 ~ data", data);
       return data;
     } catch (error) {
       console.log(error);

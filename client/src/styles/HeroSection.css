@@ -33,3 +33,10 @@
 .hero .content p {
   font-family: "Montserrat", sans-serif;
 }
+
+.restaurant-details-content {
+  background: #3737372e;
+  padding: 20px;
+  border-radius: 50px;
+  width: 200px;
+}
