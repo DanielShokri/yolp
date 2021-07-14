@@ -59,10 +59,7 @@ const RestaurantDetails = (props) => {
     if (isAuthenticated && user.id) {
       if (!isDelete) {
         const restaurantToAdd = {
-          name: restaurant.name,
-          location: restaurant.location,
           restaurant_id: restaurant.id,
-          restaurant_image: restaurant.restaurant_image,
         };
         dispatch(
           handleSaveToFavorite({

@@ -6,10 +6,11 @@ const baseURL =
     : "http://localhost:3001/auth";
 
 const parsed = JSON.parse(localStorage.getItem("persist:users"));
+
 export default axios.create({
   baseURL,
   headers: {
     "content-type": "application/json",
-    Authorization: JSON.parse(parsed.user).token,
+    Authorization: parsed && JSON.parse(parsed.user).token,
   },
 });

@@ -8,6 +8,8 @@ export const priceRangeText = {
   5: "Very Expensive",
 };
 
+// Express server on port 3002
+
 export const options = [
   {
     value: 1,

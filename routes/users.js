@@ -118,7 +118,7 @@ router.get("/user/:id", auth, async (req, res) => {
 
 router.post("/add-favorite", auth, async (req, res) => {
   const { restaurantToAdd, user_id } = req.body;
-  const { name, location, restaurant_id, restaurant_image } = restaurantToAdd;
+  const { restaurant_id } = restaurantToAdd;
   try {
     const favArray = await db.query(
       "SELECT restaurant_id FROM favorites WHERE user_id=$1",
@@ -129,8 +129,8 @@ router.post("/add-favorite", auth, async (req, res) => {
 
     if (!isDuplicateFavorite(favoritesList, restaurantToAdd.restaurant_id)) {
       const newFavorites = await db.query(
-        `INSERT INTO favorites (name, location, restaurant_id, restaurant_image, user_id) VALUES ($1, $2, $3, $4, $5) returning *`,
-        [name, location, restaurant_id, restaurant_image, user_id]
+        `INSERT INTO favorites (restaurant_id, user_id) VALUES ($1, $2) returning *`,
+        [restaurant_id, user_id]
       );
       res.status(200).json(newFavorites.rows[0]);
     } else {
