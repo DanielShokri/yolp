@@ -51,19 +51,12 @@ router.post("/login", async (req, res) => {
   try {
     // 1.getting the req body
     const { email, password } = req.body;
+
     await loginSchema.validateAsync(req.body);
     // 2.check if user exist (if not throw error)
     const user = await db.query("SELECT * FROM users WHERE email=$1", [email]);
-    const favorites = await db.query(
-      "SELECT * FROM favorites WHERE user_id=$1",
-      [user.rows[0].id]
-    );
 
     if (user.rowCount === 0) {
-      console.log(
-        "🚀 ~ file: users.js ~ line 63 ~ router.post ~ user.rowCount",
-        user.rowCount
-      );
       return res.status(401).json("Password or email is incorrect");
     }
     // 3.check if incoming password is the same as DB password
@@ -79,8 +72,15 @@ router.post("/login", async (req, res) => {
     // return to client
     const { id, name } = user.rows[0];
 
+    // Get user Favorites
+    const favorites = await db.query(
+      "SELECT * FROM favorites WHERE user_id=$1",
+      [user.rows[0].id]
+    );
+
     res.json({ token, id, name, email, favorites: favorites.rows });
   } catch (error) {
+    console.log("🚀 ~ file: users.js ~ line 86 ~ router.post ~ error", error);
     if (error.isJoi) {
       return res.status(422).json(error.details[0].message);
     } else {
