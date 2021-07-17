@@ -42,10 +42,10 @@ export const isVerify = createAsyncThunk(
 
 export const handleSaveToFavorite = createAsyncThunk(
   "users/add-favorite",
-  async ({ user_id, restaurantToAdd }) => {
+  async ({ user_id, restaurant_id }) => {
     try {
       const { data } = await usersApi.post("/add-favorite", {
-        restaurantToAdd,
+        restaurant_id,
         user_id,
       });
       return data;

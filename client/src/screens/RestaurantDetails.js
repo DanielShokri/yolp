@@ -58,41 +58,19 @@ const RestaurantDetails = (props) => {
   const handleSaveOrDeleteFavorite = async (isDelete) => {
     if (isAuthenticated && user.id) {
       if (!isDelete) {
-        const restaurantToAdd = {
-          restaurant_id: restaurant.id,
-        };
         dispatch(
           handleSaveToFavorite({
-            restaurantToAdd,
+            restaurant_id: restaurantId,
             user_id: user.id,
           })
-        )
-          .then(() => {
-            setOpen(true);
-          })
-          .catch(({ response }) => {
-            setErrorMsg(
-              response.data.msg ? response.data.msg : "Already in favorites!"
-            );
-            setOpenError(true);
-          });
+        );
       } else {
         dispatch(
           handleRemoveFromFavorite({
             restaurant_id: restaurantId,
             user_id: user.id,
           })
-        )
-          .then(() => {
-            setErrorMsg("Deleted successfully from favorites");
-            setOpenError(true);
-          })
-          .catch(({ response }) => {
-            setErrorMsg(
-              response.data.msg ? response.data.msg : "Already in favorites!"
-            );
-            setOpenError(true);
-          });
+        );
       }
     } else {
       setErrorMsg("You need to sign in to add favorites!");
@@ -123,7 +101,9 @@ const RestaurantDetails = (props) => {
     return Object.keys(user).length !== 0 &&
       user.favorites &&
       Object.keys(user?.favorites).length !== 0 &&
-      user?.favorites.some((fav) => fav.restaurant_id === restaurantId) ? (
+      user?.favorites.some(
+        (fav) => fav && fav.restaurant_id === restaurantId
+      ) ? (
       <Button
         className="button-spacing"
         variant="outlined"
