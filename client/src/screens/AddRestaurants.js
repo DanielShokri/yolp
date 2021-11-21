@@ -1,36 +1,19 @@
-import { useState, useEffect } from "react";
-import {
-  MenuItem,
-  Button,
-  Typography,
-  TextField,
-  Grid,
-  CssBaseline,
-  Avatar,
-  Container,
-  IconButton,
-  Tooltip,
-} from "@material-ui/core";
-import { KeyboardTimePicker } from "@material-ui/pickers";
+import {useContext, useEffect, useState} from "react";
+import {Avatar, Button, Container, CssBaseline, Grid, MenuItem, TextField, Typography,} from "@mui/material";
+import TimePicker from "@mui/lab/TimePicker";
 import useForm from "../utils/useForm";
-import { useContext } from "react";
-import { AlertFail, AlertSuccess } from "./../components/Alert";
-import { AlertContext } from "./../context/AlertContext";
-import { options, useStylesForm } from "./../utils/constants";
+import {AlertFail, AlertSuccess} from "./../components/Alert";
+import {AlertContext} from "./../context/AlertContext";
+import {options, useStylesForm} from "./../utils/constants";
 import HeroSection from "../components/HeroSection";
-import AddLocationIcon from "@material-ui/icons/AddLocation";
-import { PhotoCamera } from "@material-ui/icons";
-import EditIcon from "@material-ui/icons/Edit";
-import { routes, buildPath } from "./../utils/routes";
-import { useHistory } from "react-router";
+import AddLocationIcon from "@mui/icons-material/AddLocation";
+import EditIcon from "@mui/icons-material/Edit";
+import {buildPath, routes} from "./../utils/routes";
+import {useHistory} from "react-router";
 import "../styles/AddRestaurant.css";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  handleAddRestaurant,
-  handleEditRestaurant,
-} from "../features/restaurants/restaurantsSlice";
-import { useFetchRestaurantsQuery } from "../features/api/restaurantsApiSlice";
-import { setRestaurants } from "../features/restaurants/restaurantsSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {handleAddRestaurant, handleEditRestaurant, setRestaurants,} from "../features/restaurants/restaurantsSlice";
+import {useFetchRestaurantsQuery} from "../features/api/restaurantsApiSlice";
 
 const AddRestaurants = (props) => {
   const { restaurantEdit, isEditMode } = props;
@@ -204,9 +187,16 @@ const AddRestaurants = (props) => {
                   label="Location"
                 />
               </Grid>
-              <Grid item xs={12} md={12} container justify="center">
-                <KeyboardTimePicker
+              <Grid
+                item
+                xs={12}
+                md={12}
+                container
+                justifyContent="space-between"
+              >
+                <TimePicker
                   margin="normal"
+                  renderInput={(props) => <TextField {...props} />}
                   required
                   label="Opening time"
                   name="opening_time"
@@ -217,8 +207,9 @@ const AddRestaurants = (props) => {
                     "aria-label": "change time",
                   }}
                 />
-                <KeyboardTimePicker
+                <TimePicker
                   margin="normal"
+                  renderInput={(props) => <TextField {...props} />}
                   required
                   name="closing_time"
                   label="Closing time"
@@ -239,7 +230,7 @@ const AddRestaurants = (props) => {
                   name="restaurantImage"
                   onChange={handleCapture}
                 />
-                <Tooltip title="Select Image">
+                {/* <Tooltip title="Select Image">
                   <label htmlFor="faceImage">
                     <IconButton
                       className={classes.faceImage}
@@ -260,14 +251,15 @@ const AddRestaurants = (props) => {
                       style={{ height: "40px" }}
                     />
                   )}
-                </label>
+                </label> */}
               </Grid>
             </Grid>
-            <Grid container justify="space-around">
+            <Grid container justifyContent="space-between">
               <Grid item>
                 {isEditMode && (
                   <Button
                     fullWidth
+                    size="large"
                     variant="contained"
                     color="secondary"
                     className={classes.submit}
@@ -287,6 +279,7 @@ const AddRestaurants = (props) => {
                 <Button
                   type="submit"
                   fullWidth
+                  size="large"
                   variant="contained"
                   color="primary"
                   className={classes.submit}

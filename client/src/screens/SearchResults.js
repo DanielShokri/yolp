@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import {useEffect} from "react";
 import HeroSection from "./../components/HeroSection";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@mui/material";
 import RestaurantsList from "./../components/RestaurantsList";
-import { useSelector, useDispatch } from "react-redux";
-import { getRestaurantsByQuery } from "./../features/restaurants/restaurantsSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {getRestaurantsByQuery} from "./../features/restaurants/restaurantsSlice";
 
 const SearchResults = ({ history }) => {
   const { query, restaurants } = useSelector((state) => state.restaurants);

@@ -8,8 +8,10 @@
   margin: 25px 0 !important;
 }
 
-.button-spacing {
-  margin-left: 10px !important;
+
+
+.review-button {
+  margin: 10px 10px 0 0 !important;
 }
 
 @media screen and (max-width: 768px) {
@@ -19,6 +21,10 @@
   }
 
   .review-button {
-    margin: 10px 10px 15px !important;
+    margin: 13px 10px 0 0 !important;
+  }
+
+  .button-container {
+    text-align: center;
   }
 }

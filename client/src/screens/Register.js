@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-import { routes } from "./../utils/routes";
+import {useEffect, useState} from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import {makeStyles} from "@mui/styles";
+import {Link} from "react-router-dom";
+import {routes} from "./../utils/routes";
 import useForm from "./../utils/useForm";
-import { useDispatch, useSelector } from "react-redux";
-import { clearUserError, userRegister } from "../features/users/usersSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {clearUserError, userRegister} from "../features/users/usersSlice";
 
 function Copyright() {
   return (

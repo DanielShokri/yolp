@@ -1,7 +1,5 @@
-import { useEffect, useContext } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import authApi from "./api/authApi";
-import { useSelector, useDispatch } from "react-redux";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {useSelector} from "react-redux";
 // Screens
 import AddRestaurants from "./screens/AddRestaurants";
 import Header from "./components/Header";
@@ -12,35 +10,19 @@ import SearchResults from "./screens/SearchResults";
 import RegisterPage from "./screens/Register";
 import UserProfile from "./screens/UserProfile";
 import EditRestaurant from "./screens/EditRestaurant";
+import LoginPage from "./screens/Login";
+import {routes} from "./utils/routes";
 
 // Materiel ui
-import { Grid } from "@material-ui/core";
-import { routes } from "./utils/routes";
-import LoginPage from "./screens/Login";
+import {Grid} from "@mui/material";
+
 // Context
-import { AlertContext } from "./context/AlertContext";
-import { AlertInfo } from "./components/Alert";
-import { setIsAuthenticated, userLogout } from "./features/users/usersSlice";
+import {AlertInfo} from "./components/Alert";
+import {useAuth} from "./utils/useAuth";
 
-function App(props) {
-  const { user, isAuthenticated } = useSelector((state) => state.users);
-  const { setOpenInfo } = useContext(AlertContext);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    async function checkIfAuth() {
-      try {
-        const res = await authApi.get("/is-verify", {
-          headers: { Authorization: user?.token },
-        });
-        dispatch(setIsAuthenticated(res.data));
-      } catch (error) {
-        setOpenInfo(true);
-        dispatch(userLogout());
-      }
-    }
-    checkIfAuth();
-  }, [user?.token]);
+function App() {
+  const { isAuthenticated } = useSelector((state) => state.users);
+  useAuth();
 
   return (
     <div className="App">

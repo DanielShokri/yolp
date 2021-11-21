@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const { cloudinary } = require("../utils/cloudinary");
+const auth = require("../middleware/auth");
 
 // Get all restaurants
 router.get("/", async (req, res) => {
@@ -245,7 +246,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Add Review to specific restaurant
-router.post("/:id/addReview", async (req, res) => {
+router.post("/:id/addReview", auth, async (req, res) => {
   const { name, review, rating, user_id } = req.body;
   try {
     const newReview = await db.query(

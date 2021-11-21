@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import {useEffect} from "react";
 import HeroSection from "../components/HeroSection";
-import { Divider } from "@material-ui/core";
 import RestaurantsList from "../components/RestaurantsList";
 import Search from "./../components/Search";
-import { useDispatch, useSelector } from "react-redux";
-import { setRestaurants } from "../features/restaurants/restaurantsSlice";
-import { useFetchRestaurantsQuery } from "../features/api/restaurantsApiSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {setRestaurants} from "../features/restaurants/restaurantsSlice";
+import {useFetchRestaurantsQuery} from "../features/api/restaurantsApiSlice";
+import {Divider} from "@mui/material";
 
 const HomePage = () => {
   const dispatch = useDispatch();

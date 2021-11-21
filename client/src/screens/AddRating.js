@@ -1,26 +1,17 @@
-import { useState, useEffect, useContext } from "react";
+import {useContext, useEffect} from "react";
 import HeroSection from "./../components/HeroSection";
-import {
-  MenuItem,
-  Button,
-  Typography,
-  TextField,
-  Grid,
-  CssBaseline,
-  Avatar,
-  Container,
-} from "@material-ui/core";
-import RateReviewIcon from "@material-ui/icons/RateReview";
-import { AlertSuccess, AlertFail } from "./../components/Alert";
-import { reviewOptions } from "../utils/constants";
-import { AlertContext } from "./../context/AlertContext";
+import {Avatar, Button, Container, CssBaseline, Grid, MenuItem, TextField, Typography,} from "@mui/material";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import {AlertFail, AlertSuccess} from "./../components/Alert";
+import {reviewOptions} from "../utils/constants";
+import {AlertContext} from "./../context/AlertContext";
 import useForm from "./../utils/useForm";
 import restaurantsApi from "../api/restaurantsApi";
-import { useStylesForm } from "./../utils/constants";
-import { routes, buildPath } from "./../utils/routes";
-import { useDispatch, useSelector } from "react-redux";
-import { useFetchRestaurantQuery } from "../features/api/restaurantsApiSlice";
-import { setRestaurant } from "../features/restaurants/restaurantsSlice";
+import {useStylesForm} from "./../utils/constants";
+import {buildPath, routes} from "./../utils/routes";
+import {useDispatch, useSelector} from "react-redux";
+import {useFetchRestaurantQuery} from "../features/api/restaurantsApiSlice";
+import {setRestaurant} from "../features/restaurants/restaurantsSlice";
 
 const AddRating = (props) => {
   const { match, history } = props;
@@ -127,7 +118,7 @@ const AddRating = (props) => {
                 />
               </Grid>
             </Grid>
-            <Grid container justify="space-around">
+            <Grid container justifyContent="space-between" sx={{ mt: 3 }}>
               <Grid item>
                 <Button
                   fullWidth

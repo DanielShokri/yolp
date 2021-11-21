@@ -35,7 +35,12 @@ router.post("/register", async (req, res) => {
     const token = jwtGenerator(newUser.rows[0].id);
     const { id } = newUser.rows[0];
 
-    res.json({ token, id, name, email });
+    const favorites = await db.query(
+      "SELECT * FROM favorites WHERE user_id=$1",
+      [newUser.rows[0].id]
+    );
+
+    res.json({ token, id, name, email, favorites: favorites.rows });
   } catch (error) {
     if (error.isJoi) {
       return res.status(422).json(error.details[0].message);
@@ -89,6 +94,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
 // User
 
 router.get("/user/:id", auth, async (req, res) => {
@@ -117,8 +123,7 @@ router.get("/user/:id", auth, async (req, res) => {
 // Favorites
 
 router.post("/add-favorite", auth, async (req, res) => {
-  const { restaurantToAdd, user_id } = req.body;
-  const { restaurant_id } = restaurantToAdd;
+  const { restaurant_id, user_id } = req.body;
   try {
     const favArray = await db.query(
       "SELECT restaurant_id FROM favorites WHERE user_id=$1",
@@ -127,7 +132,7 @@ router.post("/add-favorite", auth, async (req, res) => {
 
     const favoritesList = favArray.rows;
 
-    if (!isDuplicateFavorite(favoritesList, restaurantToAdd.restaurant_id)) {
+    if (!isDuplicateFavorite(favoritesList, restaurant_id)) {
       const newFavorites = await db.query(
         `INSERT INTO favorites (restaurant_id, user_id) VALUES ($1, $2) returning *`,
         [restaurant_id, user_id]

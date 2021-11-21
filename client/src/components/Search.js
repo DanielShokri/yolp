@@ -1,18 +1,10 @@
-import { useContext } from "react";
-import {
-  FormControl,
-  OutlinedInput,
-  FormHelperText,
-  InputAdornment,
-  IconButton,
-  InputLabel,
-} from "@material-ui/core";
-import { SearchOutlined } from "@material-ui/icons";
+import {FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput,} from "@mui/material";
+import {SearchOutlined} from "@mui/icons-material";
 import useForm from "./../utils/useForm";
-import { routes } from "./../utils/routes";
-import { useHistory } from "react-router";
-import { useDispatch } from "react-redux";
-import { setSearchQuery } from "../features/restaurants/restaurantsSlice";
+import {routes} from "./../utils/routes";
+import {useHistory} from "react-router";
+import {useDispatch} from "react-redux";
+import {setSearchQuery} from "../features/restaurants/restaurantsSlice";
 
 const Search = () => {
   const dispatch = useDispatch();
