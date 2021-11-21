@@ -18,11 +18,11 @@ import {Grid} from "@mui/material";
 
 // Context
 import {AlertInfo} from "./components/Alert";
-import {useAuth} from "./utils/useAuth";
+import {useauth} from "./utils/useauth";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.users);
-  useAuth();
+  useauth();
 
   return (
     <div className="App">
