@@ -4,7 +4,7 @@ import {useContext, useEffect} from "react";
 import authApi from "../api/authApi";
 import {setIsAuthenticated, userLogout} from "../features/users/usersSlice";
 
-export const useauth = () => {
+export const useAuth = () => {
   const { user } = useSelector((state) => state.users);
   const { setOpenInfo } = useContext(AlertContext);
   const dispatch = useDispatch();
