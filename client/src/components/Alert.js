@@ -1,19 +1,24 @@
-import MuiAlert from "@material-ui/lab/Alert";
-import { Snackbar } from "@material-ui/core";
-import { AlertContext } from "./../context/AlertContext";
-import { useContext, useEffect } from "react";
+import React, {useContext, useEffect} from "react";
+import {AlertContext} from "./../context/AlertContext";
+import MuiAlert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import Slide from "@mui/material/Slide";
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
 }
 
-function AlertError(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const AlertRegular = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-function AlertInfos(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const AlertError = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+const AlertInfos = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export const AlertSuccess = ({ children }) => {
   const { open, setOpen } = useContext(AlertContext);
@@ -26,13 +31,15 @@ export const AlertSuccess = ({ children }) => {
 
   return (
     <Snackbar
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      TransitionComponent={SlideTransition}
       open={open}
       autoHideDuration={6000}
       onClose={() => setOpen(false)}
     >
-      <Alert onClose={() => setOpen(false)} severity="success">
+      <AlertRegular onClose={() => setOpen(false)} severity="success">
         {children}
-      </Alert>
+      </AlertRegular>
     </Snackbar>
   );
 };
@@ -48,6 +55,8 @@ export const AlertFail = ({ children }) => {
 
   return (
     <Snackbar
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      TransitionComponent={SlideTransition}
       open={openError}
       autoHideDuration={6000}
       onClose={() => setOpenError(false)}
@@ -70,6 +79,8 @@ export const AlertInfo = ({ children }) => {
 
   return (
     <Snackbar
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      TransitionComponent={SlideTransition}
       open={openInfo}
       autoHideDuration={6000}
       onClose={() => setOpenInfo(false)}

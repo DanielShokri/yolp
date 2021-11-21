@@ -1,24 +1,14 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  Typography,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Badge,
-  MenuItem,
-  Button,
-  Menu,
-  InputBase,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
-import MoreIcon from "@material-ui/icons/MoreVert";
-// import AccountCircle from "@material-ui/icons/AccountCircle";
-// import MailIcon from "@material-ui/icons/Mail";
-// import NotificationsIcon from "@material-ui/icons/Notifications";
-import { buildPath, routes } from "./../utils/routes";
-import { useHistory } from "react-router";
-import { useSelector } from 'react-redux';
+import {makeStyles} from "@mui/styles";
+import {AppBar, Button, IconButton, Menu, MenuItem, Toolbar, Typography,} from "@mui/material";
+import {Link} from "react-router-dom";
+import MoreIcon from "@mui/icons-material/MoreVert";
+// import AccountCircle from "@mui/icons-material/AccountCircle";
+// import MailIcon from "@mui/icons-material/Mail";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+import {buildPath, routes} from "./../utils/routes";
+import {useHistory} from "react-router";
+import {useSelector} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -144,16 +134,16 @@ const Header = () => {
 
   return (
     <div className={classes.grow}>
-      <AppBar color="transparent" position="static">
+      <AppBar color="inherit" position="static">
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
             <Link className={classes.noLinkTextDec} to="/">
-              YOLP
+              <img src="/images/logo.png" alt="logo" width="60" />
             </Link>
           </Typography>
           <div className={classes.sectionDesktop}>
             <div className={classes.marginLeftButtons}>
-              <Button>
+              <Button color="primary">
                 <Link className={classes.noLinkTextDec} to="/">
                   Home
                 </Link>

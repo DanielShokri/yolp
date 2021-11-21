@@ -1,88 +1,80 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100vh;
+    background-color: #121212;
+    color: white;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 label.search-label {
-  color: white !important;
+    color: white !important;
 }
 
 /* Utils */
 .m-30 {
-  margin: 30px !important;
+    margin: 30px !important;
 }
 
 .mtb-20 {
-  margin: 20px 0 !important;
+    margin: 20px 0 !important;
 }
 
 .nav-links {
-  color: white;
-  text-decoration: none;
+    color: white;
+    text-decoration: none;
 }
 
 .input-box-shadow {
-  box-shadow: 0 0 5pt 0.5pt #d3d3d3;
+    box-shadow: 0 0 5pt 0.5pt #d3d3d3;
 }
 
 .flex-basis {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 
-/* Table */
-.table-container {
-  height: 400;
-  padding: 0 80px;
-  margin: 50px 0 30px 0;
-}
 
 /* Spinner */
 .spinner {
-  width: 64px;
-  height: 64px;
-  border: 8px solid;
-  border-color: #3d5af1 transparent #3d5af1 transparent;
-  border-radius: 50%;
-  animation: spin 1.2s linear infinite;
-  /* Center vertically and horizontally */
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  margin: 80px 0 0 -25px; /* apply negative top and left margins to truly center the element */
+    width: 64px;
+    height: 64px;
+    border: 8px solid;
+    border-color: #3d5af1 transparent #3d5af1 transparent;
+    border-radius: 50%;
+    animation: spin 1.2s linear infinite;
+    /* Center vertically and horizontally */
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    margin: 80px 0 0 -25px; /* apply negative top and left margins to truly center the element */
 }
 
 @keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
+    100% {
+        transform: rotate(360deg);
+    }
 }
+
 /* Media Queries */
 
 @media screen and (max-width: 768px) {
-  .table-container {
-    height: 400;
-    padding: 0 10px;
-    margin: 35px 0 30px 0;
-  }
 
-  .MuiGrid-spacing-xs-3 > .MuiGrid-item {
-    padding: 12px 0 !important;
-  }
+    .MuiGrid-spacing-xs-3 > .MuiGrid-item {
+        padding: 12px 0 !important;
+    }
 }
 
 @media screen and (min-width: 960px) {
-  .MuiGrid-grid-md-6 {
-    max-width: 30% !important;
-  }
+    .MuiGrid-grid-md-6 {
+        max-width: 30% !important;
+    }
 }

@@ -1,10 +1,10 @@
 import Card from "./Card";
-import { Typography, Grid, Button } from "@material-ui/core";
-import { useState, useContext } from "react";
-import { AlertSuccess, AlertFail } from "./Alert";
-import { AlertContext } from "./../context/AlertContext";
-import { useSelector, useDispatch } from "react-redux";
-import { handleDeleteRestaurant } from "./../features/restaurants/restaurantsSlice";
+import {Button, Grid, Typography} from "@mui/material";
+import {useContext, useState} from "react";
+import {AlertFail, AlertSuccess} from "./Alert";
+import {AlertContext} from "./../context/AlertContext";
+import {useDispatch} from "react-redux";
+import {handleDeleteRestaurant} from "./../features/restaurants/restaurantsSlice";
 
 const RestaurantsList = ({ restaurantsList, isSearchList }) => {
   const [showMoreCount, setShowMoreCount] = useState(6);
@@ -44,9 +44,9 @@ const RestaurantsList = ({ restaurantsList, isSearchList }) => {
           Recent Restaurants
         </Typography>
       )}
-      <Grid container alignItems="center" justify="center" spacing={3}>
+      <Grid container alignItems="center" justify="center" spacing={4}>
         {restaurantsList.slice(0, showMoreCount).map((restaurant) => (
-          <Grid item xs={12} sm={6} xl={4} md={6} key={restaurant.id}>
+          <Grid item xs={12} sm={6} md={3} key={restaurant.id}>
             <Card restaurant={restaurant} handleDelete={handleDelete} />
           </Grid>
         ))}

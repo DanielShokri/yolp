@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { Button } from "@material-ui/core";
-import { routes } from "./../utils/routes";
-import { useSelector, useDispatch } from "react-redux";
-import { userLogout } from "../features/users/usersSlice";
+import {useEffect} from "react";
+import {Button} from "@mui/material";
+import {routes} from "./../utils/routes";
+import {useDispatch, useSelector} from "react-redux";
+import {userLogout} from "../features/users/usersSlice";
 
 const UserProfile = (props) => {
   const { history, match } = props;

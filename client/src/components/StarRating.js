@@ -1,6 +1,6 @@
-import Rating from "@material-ui/lab/Rating";
-import Box from "@material-ui/core/Box";
-import { useState } from "react";
+import Rating from '@mui/material/Rating';
+import Box from "@mui/material/Box";
+import {useState} from "react";
 
 const labels = {
   1: "Not good",

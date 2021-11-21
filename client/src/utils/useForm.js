@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 
 const useForm = (callback, defaultInputs) => {
   const [inputs, setInputs] = useState(
@@ -15,7 +15,7 @@ const useForm = (callback, defaultInputs) => {
   };
 
   const handleInputChange = (event) => {
-    event.persist();
+    // event.persist();
     setInputs((inputs) => ({
       ...inputs,
       [event.target.name]: event.target.value,
